@@ -1,7 +1,9 @@
 package ainhoamoreno.com.lastfm.repository;
 
+import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.data.Artist;
 import ainhoamoreno.com.lastfm.network.LastFmService;
+import ainhoamoreno.com.lastfm.util.Resources;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -18,7 +20,7 @@ public class ArtistRepository {
     }
 
     public Observable<Artist> getSearch(String name) {
-        return service.getArtist("a7c02f03da8e2b8cd6432c02062f6e18", "json", name, 100)
+        return service.getArtist(Resources.getString(R.string.flash_fm_api_key), "json", name, 100)
                 .subscribeOn(Schedulers.io())
                 .filter(artistSearch -> artistSearch != null
                         && artistSearch.results != null

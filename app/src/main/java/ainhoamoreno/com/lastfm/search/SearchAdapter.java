@@ -59,13 +59,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         if (mArtists.size() > position) {
             Artist artist = mArtists.get(position);
             holder.mTextView.setText(artist.name);
-            String url = artist.image.get(2).text;
+            //String url = artist.image.get(2).text; //175x175
+            String url = artist.image.get(3).text; //300x300
             Log.e("pepe", "url = " + url);
             if (!TextUtils.isEmpty(url)) {
                 Picasso.with(holder.mImageView.getContext())
                         .load(url)
-//                        .placeholder(R.mipmap.ic_launcher)
-//                        .fit()
                         .into(holder.mImageView);
             }
         }
