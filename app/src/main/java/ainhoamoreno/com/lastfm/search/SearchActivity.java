@@ -6,13 +6,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
+import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.data.Artist;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import ainhoamoreno.com.lastfm.util.Resources;
@@ -20,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnArtistClickListener {
 
     @BindView(R.id.searchView) SearchView mSearchView;
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -65,7 +68,7 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new SearchAdapter(Resources.pxFromDp(this, 300));
+        mAdapter = new SearchAdapter(Resources.pxFromDp(this, 300), this);
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -82,8 +85,13 @@ public class SearchActivity extends AppCompatActivity {
         float newSize = Resources.pxFromDp(this, Float.parseFloat(size));
 
         mRecyclerView.setAdapter(null);
-        mAdapter = new SearchAdapter(newSize);
+        mAdapter = new SearchAdapter(newSize, this);
         mRecyclerView.setAdapter(mAdapter);
         search(mSearchView.getQuery().toString());
+    }
+
+    @Override
+    public void onClick(int position, ArtistItem artistItem, ImageView imageView) {
+        Toast.makeText(this, "Item Clicked", Toast.LENGTH_SHORT).show();
     }
 }
