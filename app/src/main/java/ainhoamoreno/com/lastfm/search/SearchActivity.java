@@ -26,7 +26,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.list);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         SearchView searchView = findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -42,7 +42,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        setUpRecyclerView(mRecyclerView);
+        setUpRecyclerView(recyclerView);
 
         repository = new ArtistRepository(LastFmApplication.get().getService());
     }
