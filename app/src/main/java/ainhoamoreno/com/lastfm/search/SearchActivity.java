@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.widget.RadioGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +15,29 @@ import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.data.Artist;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
+import ainhoamoreno.com.lastfm.util.Resources;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchActivity extends AppCompatActivity {
 
+    @BindView(R.id.searchView) SearchView mSearchView;
+    @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
+    @BindView(R.id.radioGroup) RadioGroup mRadioGroup;
+
     ArtistRepository repository;
     SearchAdapter mAdapter;
+    LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        ButterKnife.bind(this);
 
-        SearchView searchView = findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 search(query);
@@ -42,7 +50,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        setUpRecyclerView(recyclerView);
+        setUpRecyclerView(mRecyclerView);
 
         repository = new ArtistRepository(LastFmApplication.get().getService());
     }
@@ -53,11 +61,11 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new SearchAdapter();
+        mAdapter = new SearchAdapter(Resources.pxFromDp(this, 300));
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -70,6 +78,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onRadioButtonClicked(View view) {
-//        int size = (int) view.getTag();
+        String size = (String) view.getTag();
+        float newSize = Resources.pxFromDp(this, Float.parseFloat(size));
+
+        mRecyclerView.setAdapter(null);
+        mAdapter = new SearchAdapter(newSize);
+        mRecyclerView.setAdapter(mAdapter);
+        search(mSearchView.getQuery().toString());
     }
 }

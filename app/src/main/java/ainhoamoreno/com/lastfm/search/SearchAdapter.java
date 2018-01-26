@@ -23,7 +23,12 @@ import ainhoamoreno.com.lastfm.data.Artist;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    private List<Artist> mArtists = new ArrayList<>();
+    private final List<Artist> mResults = new ArrayList<>();
+    private final float mImageSize;
+
+    public SearchAdapter(float imageSize) {
+        mImageSize = imageSize;
+    }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -33,10 +38,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         public TextView mTextView;
         public ImageView mImageView;
 
-        public ViewHolder(View v) {
+        public ViewHolder(View v, int imageSize) {
             super(v);
             mTextView = v.findViewById(R.id.textView);
             mImageView = v.findViewById(R.id.imageView);
+            mImageView.getLayoutParams().height = imageSize;
+            mImageView.getLayoutParams().width = imageSize;
         }
     }
 
@@ -48,7 +55,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 .inflate(R.layout.artist_detail, parent, false);
         // set the view's size, margins, paddings and layout parameters
 
-        return new ViewHolder(v);
+        return new ViewHolder(v, (int) mImageSize);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -56,8 +63,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if (mArtists.size() > position) {
-            Artist artist = mArtists.get(position);
+        if (mResults.size() > position) {
+            Artist artist = mResults.get(position);
             holder.mTextView.setText(artist.name);
             //String url = artist.image.get(2).text; //175x175
             String url = artist.image.get(3).text; //300x300
@@ -73,12 +80,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mArtists.size();
+        return mResults.size();
     }
 
     public void setData(List<Artist> data) {
-        mArtists.clear();
-        mArtists.addAll(data);
+        mResults.clear();
+        mResults.addAll(data);
 
         notifyDataSetChanged();
     }
