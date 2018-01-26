@@ -3,7 +3,6 @@ package ainhoamoreno.com.lastfm.search;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +78,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
             //String url = artist.image.get(2).text; //175x175
             String url = artist.image.get(3).text; //300x300
-            Log.e("pepe", "url = " + url);
             if (!TextUtils.isEmpty(url)) {
                 Picasso.with(holder.mImageView.getContext())
                         .load(url)
@@ -88,7 +86,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
             holder.mView.setOnClickListener(v -> {
                 ArtistItem artistItem = new ArtistItem(artist.name);
-                artistItem.setImageUrl(artist.url);
+                artistItem.setImageUrl(url);
                 mOnArtistClickListener.onClick(position, artistItem, holder.mImageView);
             });
         }

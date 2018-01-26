@@ -50,6 +50,10 @@ public class ArtistItem implements Parcelable {
         dest.writeString(imageUrl);
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }

@@ -1,14 +1,17 @@
 package ainhoamoreno.com.lastfm.search;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
+import ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity;
 import ainhoamoreno.com.lastfm.data.Artist;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import ainhoamoreno.com.lastfm.util.Resources;
@@ -31,7 +35,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
     ArtistRepository repository;
     SearchAdapter mAdapter;
-    LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +56,28 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
             }
         });
 
-        setUpRecyclerView(mRecyclerView);
+        setUpRecyclerView(new LinearLayoutManager(this));
 
         repository = new ArtistRepository(LastFmApplication.get().getService());
     }
 
-    private void setUpRecyclerView(final RecyclerView recyclerView) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mSearchView.clearFocus();
+    }
+
+    private void setUpRecyclerView(RecyclerView.LayoutManager layoutManager) {
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
-        linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
         mAdapter = new SearchAdapter(Resources.pxFromDp(this, 300), this);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void search(final String artistName) {
@@ -85,6 +93,19 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         float newSize = Resources.pxFromDp(this, Float.parseFloat(size));
 
         mRecyclerView.setAdapter(null);
+
+        switch (view.getId()) {
+            case R.id.smallRb:
+                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+                break;
+            case R.id.mediumRb:
+                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+                break;
+            case R.id.largeRb:
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                break;
+        }
+
         mAdapter = new SearchAdapter(newSize, this);
         mRecyclerView.setAdapter(mAdapter);
         search(mSearchView.getQuery().toString());
@@ -92,6 +113,15 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
     @Override
     public void onClick(int position, ArtistItem artistItem, ImageView imageView) {
-        Toast.makeText(this, "Item Clicked", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ArtistDetailActivity.class);
+        intent.putExtra("EXTRA_ARTIST_ITEM", artistItem);
+        intent.putExtra("EXTRA_ARTIST_IMAGE_TRANSITION_NAME", ViewCompat.getTransitionName(imageView));
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                imageView,
+                ViewCompat.getTransitionName(imageView));
+
+        startActivity(intent, options.toBundle());
     }
 }
