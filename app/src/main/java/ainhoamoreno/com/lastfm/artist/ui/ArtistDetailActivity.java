@@ -3,6 +3,8 @@ package ainhoamoreno.com.lastfm.artist.ui;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -20,9 +22,9 @@ import butterknife.ButterKnife;
 
 public class ArtistDetailActivity extends AppCompatActivity {
 
+    @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.imageViewDetail) ImageView mImageView;
     @BindView(R.id.mainView) View mView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +35,25 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(false);
+
         Bundle extras = getIntent().getExtras();
+        ArtistItem animalItem = extras.getParcelable("EXTRA_ARTIST_ITEM");
+        mToolbar.setTitle(animalItem.getName());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             String imageTransitionName = extras.getString("EXTRA_ARTIST_IMAGE_TRANSITION_NAME");
             mImageView.setTransitionName(imageTransitionName);
         }
 
-        ArtistItem animalItem = extras.getParcelable("EXTRA_ARTIST_ITEM");
         String imageUrl = animalItem.getImageUrl();
-//        mView.post(() -> {
-//            loadImage(imageUrl, mView.getWidth());
-//        });
-        loadImage(imageUrl, 1080);
+        mView.post(() -> {
+            if (!TextUtils.isEmpty(imageUrl)) {
+                loadImage(imageUrl, mView.getWidth());
+            }
+        });
     }
 
     private void loadImage(String imageUrl, int size) {

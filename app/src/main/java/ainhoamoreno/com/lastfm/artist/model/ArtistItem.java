@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 public class ArtistItem implements Parcelable {
 
-    private String name;
+    private final String name;
     private String listeners;
     private String mbid;
     private String url;
@@ -56,5 +56,9 @@ public class ArtistItem implements Parcelable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getName() {
+        return name;
     }
 }

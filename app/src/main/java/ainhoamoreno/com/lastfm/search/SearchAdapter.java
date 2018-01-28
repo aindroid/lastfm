@@ -17,6 +17,8 @@ import java.util.List;
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.data.Artist;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by ainhoa on 24/01/2018.
@@ -38,17 +40,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView mTextView;
-        public ImageView mImageView;
-        public View mView;
+        @BindView(R.id.textView) TextView mTextView;
+        @BindView(R.id.imageView)  ImageView mImageView;
+        @BindView(R.id.artistItemView)  View mView;
 
         public ViewHolder(View v, int imageSize) {
             super(v);
 
-            mView = v;
+            ButterKnife.bind(this, v);
 
-            mTextView = v.findViewById(R.id.textView);
-            mImageView = v.findViewById(R.id.imageView);
             mImageView.getLayoutParams().height = imageSize;
             mImageView.getLayoutParams().width = imageSize;
         }

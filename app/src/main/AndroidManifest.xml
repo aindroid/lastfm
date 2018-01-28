@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".search.SearchActivity">
+        <activity
+            android:name=".search.SearchActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,7 +22,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".artist.ui.ArtistDetailActivity" />
+        <activity
+            android:name=".artist.ui.ArtistDetailActivity"
+            android:parentActivityName=".search.SearchActivity" />
     </application>
 
 </manifest>

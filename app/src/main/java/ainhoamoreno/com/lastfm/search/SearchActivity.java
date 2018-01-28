@@ -2,6 +2,7 @@ package ainhoamoreno.com.lastfm.search;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -22,16 +26,21 @@ import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity;
 import ainhoamoreno.com.lastfm.data.Artist;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
-import ainhoamoreno.com.lastfm.util.Resources;
+import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnArtistClickListener {
 
-    @BindView(R.id.searchView) SearchView mSearchView;
+    private SearchView mSearchView;
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.radioGroup) RadioGroup mRadioGroup;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+
+    @BindDimen(R.dimen.small_img_size) float smallImgSize;
+    @BindDimen(R.dimen.medium_img_size) float mediumImgSize;
+    @BindDimen(R.dimen.large_img_size) float largeImgSize;
 
     ArtistRepository repository;
     SearchAdapter mAdapter;
@@ -43,40 +52,51 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
         ButterKnife.bind(this);
 
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                search(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-        setUpRecyclerView(new LinearLayoutManager(this));
+        setSupportActionBar(mToolbar);
 
         repository = new ArtistRepository(LastFmApplication.get().getService());
+
+        setUpRecyclerView(R.id.mediumRb);
+
+//        mSearchView.setQuery("cher", true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        mSearchView.clearFocus();
+        if (mSearchView != null) {
+            mSearchView.clearFocus();
+        }
     }
 
-    private void setUpRecyclerView(RecyclerView.LayoutManager layoutManager) {
+    private void setUpRecyclerView(@IdRes int viewId) {
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(null);
 
-        // specify an adapter (see also next example)
-        mAdapter = new SearchAdapter(Resources.pxFromDp(this, 300), this);
+        final float size;
+        switch (viewId) {
+            case R.id.smallRb:
+                size = smallImgSize;
+                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+                break;
+            case R.id.mediumRb:
+                size = mediumImgSize;
+                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+                break;
+            case R.id.largeRb:
+                size = largeImgSize;
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                break;
+            default:
+                size = largeImgSize;
+                break;
+        }
+
+        mAdapter = new SearchAdapter(size, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -88,26 +108,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
                 .subscribe(artist -> mAdapter.setData(list));
     }
 
-    public void onRadioButtonClicked(View view) {
-        String size = (String) view.getTag();
-        float newSize = Resources.pxFromDp(this, Float.parseFloat(size));
+    public void onRadioButtonClicked(final View view) {
+        setUpRecyclerView(view.getId());
 
-        mRecyclerView.setAdapter(null);
-
-        switch (view.getId()) {
-            case R.id.smallRb:
-                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-                break;
-            case R.id.mediumRb:
-                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-                break;
-            case R.id.largeRb:
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                break;
-        }
-
-        mAdapter = new SearchAdapter(newSize, this);
-        mRecyclerView.setAdapter(mAdapter);
         search(mSearchView.getQuery().toString());
     }
 
@@ -123,5 +126,29 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
                 ViewCompat.getTransitionName(imageView));
 
         startActivity(intent, options.toBundle());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate( R.menu.search_activity, menu);
+
+        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        mSearchView = (SearchView) myActionMenuItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                search(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        mSearchView.setQuery("cher", true);
+
+        return true;
     }
 }
