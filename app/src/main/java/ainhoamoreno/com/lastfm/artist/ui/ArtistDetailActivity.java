@@ -18,6 +18,7 @@ import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.data.artist.getInfo.Bio;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -31,6 +32,8 @@ public class ArtistDetailActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.imageViewDetail) ImageView mImageView;
     @BindView(R.id.contentView) TextView mContentView;
+
+    @BindColor(android.R.color.transparent) int mTransparent;
 
     ArtistRepository repository;
 
@@ -52,6 +55,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         ArtistItem animalItem = extras.getParcelable("EXTRA_ARTIST_ITEM");
         mToolbar.setTitle(animalItem.getName());
+        mToolbar.setBackgroundColor(mTransparent);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             String imageTransitionName = extras.getString("EXTRA_ARTIST_IMAGE_TRANSITION_NAME");

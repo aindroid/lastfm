@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +26,12 @@ import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity;
 import ainhoamoreno.com.lastfm.data.artist.search.Artist;
+import ainhoamoreno.com.lastfm.data.artist.search.ImageType;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
-import butterknife.BindDimen;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
 
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnArtistClickListener {
 
@@ -38,10 +39,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.radioGroup) RadioGroup mRadioGroup;
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.emptyListView) TextView mEmptyView;
 
-    @BindDimen(R.dimen.small_img_size) float smallImgSize;
-    @BindDimen(R.dimen.medium_img_size) float mediumImgSize;
-    @BindDimen(R.dimen.large_img_size) float largeImgSize;
+    @BindString(R.string.search_no_results) String mNoResults;
 
     ArtistRepository repository;
     SearchAdapter mAdapter;
@@ -58,8 +58,6 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         repository = new ArtistRepository(LastFmApplication.get().getService());
 
         setUpRecyclerView(R.id.mediumRb);
-
-//        mSearchView.setQuery("cher", true);
     }
 
     @Override
@@ -78,26 +76,26 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
         mRecyclerView.setAdapter(null);
 
-        final float size;
+        final @ImageType.Type String type;
         switch (viewId) {
             case R.id.smallRb:
-                size = smallImgSize;
+                type = ImageType.SMALL;
                 mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
                 break;
             case R.id.mediumRb:
-                size = mediumImgSize;
+                type = ImageType.MEDIUM;
                 mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
                 break;
             case R.id.largeRb:
-                size = largeImgSize;
+                type = ImageType.LARGE;
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
                 break;
             default:
-                size = largeImgSize;
+                type = ImageType.LARGE;
                 break;
         }
 
-        mAdapter = new SearchAdapter(size, this);
+        mAdapter = new SearchAdapter(type, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -106,15 +104,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         repository.getSearch(artistName)
                 .doOnNext(list::add)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        if (list.isEmpty()) {
-                            list.add(new Artist());
-                            mAdapter.setData(list);
-                        }
-                    }
-                })
+                .doOnComplete(() -> setEmptyViewVisibility(list.isEmpty()))
                 .subscribe(artist -> mAdapter.setData(list));
     }
 
@@ -157,8 +147,18 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
             }
         });
 
-        mSearchView.setQuery("cher", true);
+//        mSearchView.setQuery("cher", true);
 
         return true;
+    }
+
+    private void setEmptyViewVisibility(boolean showEmptyView) {
+        if (showEmptyView) {
+            mRecyclerView.setAdapter(null);
+            mEmptyView.setText(mNoResults);
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 }

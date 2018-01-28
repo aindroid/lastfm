@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">LastFm</string>
 
+    <string name="search_no_results">No results</string>
+    <string name="search_start_searching">Search for an artist...</string>
+    <string name="search_img_small">S</string>
+    <string name="search_img_medium">M</string>
+    <string name="search_img_large">L</string>
+
 </resources>
