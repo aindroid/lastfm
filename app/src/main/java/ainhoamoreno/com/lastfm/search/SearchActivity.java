@@ -24,12 +24,13 @@ import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity;
-import ainhoamoreno.com.lastfm.data.Artist;
+import ainhoamoreno.com.lastfm.data.artist.search.Artist;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnArtistClickListener {
 
@@ -105,6 +106,15 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         repository.getSearch(artistName)
                 .doOnNext(list::add)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        if (list.isEmpty()) {
+                            list.add(new Artist());
+                            mAdapter.setData(list);
+                        }
+                    }
+                })
                 .subscribe(artist -> mAdapter.setData(list));
     }
 
@@ -147,7 +157,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
             }
         });
 
-        mSearchView.setQuery("cher", true);
+//        mSearchView.setQuery("cher", true);
 
         return true;
     }

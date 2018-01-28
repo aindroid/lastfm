@@ -19,7 +19,7 @@
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#60000000"
+        android:background="@color/foregroundBlack"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"

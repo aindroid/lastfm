@@ -5,10 +5,9 @@ import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import ainhoamoreno.com.lastfm.data.ArtistSearch;
+import ainhoamoreno.com.lastfm.data.artist.search.ArtistSearch;
 import ainhoamoreno.com.lastfm.network.LastFmService;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 

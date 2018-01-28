@@ -1,5 +1,5 @@
 
-package ainhoamoreno.com.lastfm.data;
+package ainhoamoreno.com.lastfm.data.artist.search;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

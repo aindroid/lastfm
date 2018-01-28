@@ -61,4 +61,12 @@ public class ArtistItem implements Parcelable {
     public String getName() {
         return name;
     }
+
+    public String getMbid() {
+        return mbid;
+    }
+
+    public void setMbid(String mbid) {
+        this.mbid = mbid;
+    }
 }
