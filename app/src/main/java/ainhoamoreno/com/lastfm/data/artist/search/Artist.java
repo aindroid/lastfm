@@ -1,59 +1,68 @@
 
 package ainhoamoreno.com.lastfm.data.artist.search;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Artist {
 
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("listeners")
     @Expose
-    public String listeners;
+    private String listeners;
     @SerializedName("mbid")
     @Expose
-    public String mbid;
+    private String mbid;
     @SerializedName("url")
     @Expose
-    public String url;
+    private String url;
     @SerializedName("streamable")
     @Expose
-    public String streamable;
+    private String streamable;
     @SerializedName("image")
     @Expose
-    public List<Image> image = null;
+    private List<Image> image = new ArrayList<>();
 
-    public Artist withName(String name) {
-        this.name = name;
-        return this;
+    public String getName() {
+        return name;
     }
 
-    public Artist withListeners(String listeners) {
-        this.listeners = listeners;
-        return this;
+    public String getListeners() {
+        return listeners;
     }
 
-    public Artist withMbid(String mbid) {
-        this.mbid = mbid;
-        return this;
+    public String getMbid() {
+        return mbid;
     }
 
-    public Artist withUrl(String url) {
-        this.url = url;
-        return this;
+    public String getUrl() {
+        return url;
     }
 
-    public Artist withStreamable(String streamable) {
-        this.streamable = streamable;
-        return this;
+    public String getStreamable() {
+        return streamable;
     }
 
-    public Artist withImage(List<Image> image) {
-        this.image = image;
-        return this;
+    public List<Image> getImage() {
+        return image;
     }
+
+    public Image getSmallImage() {
+        return image.size() > 0 ? image.get(0) : null;
+    }
+
+    public Image getMediumImage() {
+        return image.size() > 1 ? image.get(1) : null;
+    }
+
+    public Image getLargeImage() {
+        return image.size() > 2 ? image.get(2) : null;
+    }
+
 
 }

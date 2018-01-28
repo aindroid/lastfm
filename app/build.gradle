@@ -10,7 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        resValue "string", "flash_fm_api_key", "a7c02f03da8e2b8cd6432c02062f6e18"
+        buildConfigField "String", "FLASH_FM_API_KEY", "\"a7c02f03da8e2b8cd6432c02062f6e18\""
     }
 
     buildTypes {
@@ -18,6 +18,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
 
     compileOptions {

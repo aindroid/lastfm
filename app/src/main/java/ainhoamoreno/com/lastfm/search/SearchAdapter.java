@@ -80,16 +80,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         Artist artist = mResults.get(position);
-        holder.mTextView.setText(artist.name);
+        holder.mTextView.setText(artist.getName());
 
+        ViewCompat.setTransitionName(holder.mImageView, artist.getName());
 
-
-        ViewCompat.setTransitionName(holder.mImageView, artist.name);
-
-        //String url = artist.image.get(2).text; //175x175
-        String url = artist.image.get(3).text; //300x300
+        String url = artist.getLargeImage().text; //300x300
         if (!TextUtils.isEmpty(url)) {
             Picasso.with(holder.mImageView.getContext())
                     .load(url)
@@ -97,14 +93,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
 
         holder.mView.setOnClickListener(v -> {
-            ArtistItem artistItem = new ArtistItem(artist.name);
+            ArtistItem artistItem = new ArtistItem(artist.getName());
             artistItem.setImageUrl(url);
-            artistItem.setMbid(artist.mbid);
+            artistItem.setMbid(artist.getMbid());
             mOnArtistClickListener.onClick(position, artistItem, holder.mImageView);
         });
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mResults.size();
