@@ -64,13 +64,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ParentView
 
     public static class ViewHolderEmty extends ParentViewHolder {
         // each data item is just a string in this case
-        @BindView(android.R.id.text1) TextView mTextView;
+        TextView mTextView;
 
         public ViewHolderEmty(View v) {
             super(v);
 
-            ButterKnife.bind(this, v);
+//            ButterKnife.bind(this, v);
 
+            mTextView = new TextView(v.getContext());
             mTextView.setText("Empty");
         }
     }

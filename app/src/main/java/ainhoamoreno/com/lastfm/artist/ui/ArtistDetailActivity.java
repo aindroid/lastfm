@@ -1,30 +1,26 @@
 package ainhoamoreno.com.lastfm.artist.ui;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.squareup.picasso.Target;
 
 import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.data.artist.getInfo.Bio;
-import ainhoamoreno.com.lastfm.data.artist.search.Artist;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by ainhoa on 26/01/2018.
@@ -34,15 +30,14 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.imageViewDetail) ImageView mImageView;
-    @BindView(R.id.mainView) View mView;
-    @BindView(R.id.summaryView) TextView mSummaryView;
+    @BindView(R.id.contentView) TextView mContentView;
 
     ArtistRepository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.artist_detail_);
+        setContentView(R.layout.artist_detail);
 
         supportPostponeEnterTransition();
 
@@ -64,40 +59,40 @@ public class ArtistDetailActivity extends AppCompatActivity {
         }
 
         String imageUrl = animalItem.getImageUrl();
-        mView.post(() -> {
-            if (!TextUtils.isEmpty(imageUrl)) {
-                loadImage(imageUrl, mView.getWidth());
-            }
-        });
+        if (!TextUtils.isEmpty(imageUrl)) {
+            loadImage(imageUrl);
+        }
 
         getInfo(animalItem.getMbid());
     }
 
     private void getInfo(final String mbid) {
-        final List<Artist> list = new ArrayList<>();
         repository.getInfo(mbid)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(artist -> {
                     Bio bio = artist.bio;
-                    mSummaryView.setText(bio.summary);
+                    mContentView.setText(bio.content);
                 });
     }
 
-    private void loadImage(String imageUrl, int size) {
+    private void loadImage(final String imageUrl) {
         Picasso.with(this)
                 .load(imageUrl)
-                .placeholder(R.drawable.ic_launcher_background)
-                .resize(size, size)
-                .noFade()
-                .into(mImageView, new Callback() {
+                .into(new Target() {
                     @Override
-                    public void onSuccess() {
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        mImageView.setImageBitmap(bitmap);
                         supportStartPostponedEnterTransition();
                     }
 
                     @Override
-                    public void onError() {
+                    public void onBitmapFailed(Drawable errorDrawable) {
                         supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
                     }
                 });
     }

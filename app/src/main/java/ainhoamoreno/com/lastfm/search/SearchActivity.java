@@ -157,7 +157,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
             }
         });
 
-//        mSearchView.setQuery("cher", true);
+        mSearchView.setQuery("cher", true);
 
         return true;
     }

@@ -1,6 +1,8 @@
 package ainhoamoreno.com.lastfm.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 
 import ainhoamoreno.com.lastfm.LastFmApplication;
 
@@ -20,5 +22,11 @@ public class Resources {
 
     public static float pxFromDp(final Context context, final float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    public static int getScreenWidth(Activity context) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        context.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 }
