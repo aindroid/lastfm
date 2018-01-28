@@ -2,12 +2,9 @@ package ainhoamoreno.com.lastfm.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -18,20 +15,12 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
 import ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity;
-import ainhoamoreno.com.lastfm.data.artist.search.Artist;
-import ainhoamoreno.com.lastfm.data.artist.search.ImageType;
-import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnArtistClickListener {
 
@@ -40,11 +29,11 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
     @BindView(R.id.radioGroup) RadioGroup mRadioGroup;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.emptyListView) TextView mEmptyView;
+    @BindView(R.id.progressBarView) View mProgressBarView;
 
     @BindString(R.string.search_no_results) String mNoResults;
 
-    ArtistRepository repository;
-    SearchAdapter mAdapter;
+    SearchArtistPresenter searchArtistPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +44,9 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
         setSupportActionBar(mToolbar);
 
-        repository = new ArtistRepository(LastFmApplication.get().getService());
+        searchArtistPresenter = new SearchArtistPresenter(this);
 
-        setUpRecyclerView(R.id.mediumRb);
+        searchArtistPresenter.setUpRecyclerView(R.id.mediumRb);
     }
 
     @Override
@@ -69,49 +58,11 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         }
     }
 
-    private void setUpRecyclerView(@IdRes int viewId) {
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        mRecyclerView.setAdapter(null);
-
-        final @ImageType.Type String type;
-        switch (viewId) {
-            case R.id.smallRb:
-                type = ImageType.SMALL;
-                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-                break;
-            case R.id.mediumRb:
-                type = ImageType.MEDIUM;
-                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-                break;
-            case R.id.largeRb:
-                type = ImageType.LARGE;
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                break;
-            default:
-                type = ImageType.LARGE;
-                break;
-        }
-
-        mAdapter = new SearchAdapter(type, this);
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
-    private void search(final String artistName) {
-        final List<Artist> list = new ArrayList<>();
-        repository.getSearch(artistName)
-                .doOnNext(list::add)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> setEmptyViewVisibility(list.isEmpty()))
-                .subscribe(artist -> mAdapter.setData(list));
-    }
-
     public void onRadioButtonClicked(final View view) {
-        setUpRecyclerView(view.getId());
+        searchArtistPresenter.setUpRecyclerView(view.getId());
 
-        search(mSearchView.getQuery().toString());
+//        searchArtistPresenter.newSearch(mSearchView.getQuery().toString());
+        searchArtistPresenter.newSearch("cher");
     }
 
     @Override
@@ -137,7 +88,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                search(query);
+                searchArtistPresenter.newSearch(query);
                 return false;
             }
 
@@ -147,18 +98,22 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
             }
         });
 
-//        mSearchView.setQuery("cher", true);
+        searchArtistPresenter.newSearch("cher");
 
         return true;
     }
 
-    private void setEmptyViewVisibility(boolean showEmptyView) {
+    public void setEmptyViewVisibility(boolean showEmptyView) {
         if (showEmptyView) {
             mRecyclerView.setAdapter(null);
+
+            mProgressBarView.setVisibility(View.GONE);
+
             mEmptyView.setText(mNoResults);
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);
+            mProgressBarView.setVisibility(View.VISIBLE);
         }
     }
 }
