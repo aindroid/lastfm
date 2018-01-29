@@ -12,42 +12,9 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <RadioGroup
+    <include
         android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bgColorMain"
-        android:checkedButton="@+id/mediumRb"
-        android:orientation="horizontal"
-        android:padding="7dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <RadioButton
-            android:id="@+id/smallRb"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/search_img_small" />
-
-        <RadioButton
-            android:id="@+id/mediumRb"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/search_img_medium" />
-
-        <RadioButton
-            android:id="@+id/largeRb"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/search_img_large" />
-    </RadioGroup>
+        layout="@layout/img_size_selector" />
 
     <TextView
         android:id="@+id/emptyListView"
@@ -66,20 +33,21 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:scrollbars="vertical"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/progressBarView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_weight="1" />
 
     <ProgressBar
         android:id="@+id/progressBarView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

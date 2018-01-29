@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.search;
+package ainhoamoreno.com.lastfm.common;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
-import ainhoamoreno.com.lastfm.data.artist.search.Artist;
-import ainhoamoreno.com.lastfm.data.artist.search.ImageType;
+import ainhoamoreno.com.lastfm.artist.mapper.ArtistMapper;
+import ainhoamoreno.com.lastfm.model.artist.search.Artist;
+import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,7 +93,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
 
         holder.mView.setOnClickListener(v -> {
-            ArtistItem artistItem = new ArtistItem(artist.getName());
+            ArtistMapper artistItem = new ArtistMapper(artist.getName());
             artistItem.setImageUrl(url);
             artistItem.setMbid(artist.getMbid());
             mOnArtistClickListener.onClick(position, artistItem, holder.mImageView);
@@ -113,6 +113,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     interface OnArtistClickListener {
-        void onClick(int position, ArtistItem artistItem, ImageView imageView);
+        void onClick(int position, ArtistMapper artistItem, ImageView imageView);
     }
 }

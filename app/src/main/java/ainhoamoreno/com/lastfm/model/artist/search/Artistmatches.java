@@ -1,5 +1,5 @@
 
-package ainhoamoreno.com.lastfm.data.artist.search;
+package ainhoamoreno.com.lastfm.model.artist.search;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

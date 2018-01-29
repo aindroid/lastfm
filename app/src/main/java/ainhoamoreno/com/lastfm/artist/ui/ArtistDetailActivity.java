@@ -15,17 +15,14 @@ import com.squareup.picasso.Target;
 
 import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
-import ainhoamoreno.com.lastfm.data.artist.getInfo.Bio;
+import ainhoamoreno.com.lastfm.artist.constants.Extras;
+import ainhoamoreno.com.lastfm.artist.mapper.ArtistMapper;
+import ainhoamoreno.com.lastfm.model.artist.getInfo.Bio;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-
-/**
- * Created by ainhoa on 26/01/2018.
- */
 
 public class ArtistDetailActivity extends AppCompatActivity {
 
@@ -53,12 +50,12 @@ public class ArtistDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayUseLogoEnabled(false);
 
         Bundle extras = getIntent().getExtras();
-        ArtistItem animalItem = extras.getParcelable("EXTRA_ARTIST_ITEM");
+        ArtistMapper animalItem = extras.getParcelable(Extras.EXTRA_ARTIST_ITEM);
         mToolbar.setTitle(animalItem.getName());
         mToolbar.setBackgroundColor(mTransparent);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            String imageTransitionName = extras.getString("EXTRA_ARTIST_IMAGE_TRANSITION_NAME");
+            String imageTransitionName = extras.getString(Extras.EXTRA_ARTIST_IMAGE_TRANSITION_NAME);
             mImageView.setTransitionName(imageTransitionName);
         }
 
@@ -75,7 +72,13 @@ public class ArtistDetailActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(artist -> {
                     Bio bio = artist.bio;
-                    mContentView.setText(bio.content);
+                    if (!TextUtils.isEmpty(bio.content)) {
+                        mContentView.setText(bio.content);
+                    } else if (TextUtils.isEmpty(bio.summary)) {
+                        mContentView.setText(bio.summary);
+                    } else {
+                        mContentView.setText("No content");
+                    }
                 });
     }
 

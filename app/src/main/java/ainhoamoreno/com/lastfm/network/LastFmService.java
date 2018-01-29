@@ -1,8 +1,8 @@
 package ainhoamoreno.com.lastfm.network;
 
 import ainhoamoreno.com.lastfm.BuildConfig;
-import ainhoamoreno.com.lastfm.data.artist.getInfo.ArtistGetInfo;
-import ainhoamoreno.com.lastfm.data.artist.search.ArtistSearch;
+import ainhoamoreno.com.lastfm.model.artist.getInfo.ArtistGetInfo;
+import ainhoamoreno.com.lastfm.model.artist.search.ArtistSearch;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

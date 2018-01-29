@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import ainhoamoreno.com.lastfm.data.artist.search.ArtistSearch;
+import ainhoamoreno.com.lastfm.model.artist.search.ArtistSearch;
 import ainhoamoreno.com.lastfm.network.LastFmService;
 import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 

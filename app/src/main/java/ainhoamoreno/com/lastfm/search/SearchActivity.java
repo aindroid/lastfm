@@ -2,27 +2,25 @@ package ainhoamoreno.com.lastfm.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.artist.model.ArtistItem;
-import ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchActivity extends AppCompatActivity implements SearchAdapter.OnArtistClickListener {
+public class SearchActivity extends AppCompatActivity implements SearchContract.View {
+
+    SearchContract.Presenter mSearchPresenter;
 
     private SearchView mSearchView;
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -44,9 +42,21 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
 
         setSupportActionBar(mToolbar);
 
-        searchArtistPresenter = new SearchArtistPresenter(this);
+        searchArtistPresenter = new SearchArtistPresenter(this, this);
+
+        mRecyclerView.setHasFixedSize(true);
 
         searchArtistPresenter.setUpRecyclerView(R.id.mediumRb);
+
+        mRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            String query = mSearchView.getQuery().toString();
+
+            if (!TextUtils.isEmpty(query)) {
+                searchArtistPresenter.setUpRecyclerView(checkedId);
+
+                searchArtistPresenter.search(query);
+            }
+        });
     }
 
     @Override
@@ -58,37 +68,16 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
         }
     }
 
-    public void onRadioButtonClicked(final View view) {
-        searchArtistPresenter.setUpRecyclerView(view.getId());
-
-//        searchArtistPresenter.newSearch(mSearchView.getQuery().toString());
-        searchArtistPresenter.newSearch("cher");
-    }
-
-    @Override
-    public void onClick(int position, ArtistItem artistItem, ImageView imageView) {
-        Intent intent = new Intent(this, ArtistDetailActivity.class);
-        intent.putExtra("EXTRA_ARTIST_ITEM", artistItem);
-        intent.putExtra("EXTRA_ARTIST_IMAGE_TRANSITION_NAME", ViewCompat.getTransitionName(imageView));
-
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                this,
-                imageView,
-                ViewCompat.getTransitionName(imageView));
-
-        startActivity(intent, options.toBundle());
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate( R.menu.search_activity, menu);
 
-        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
-        mSearchView = (SearchView) myActionMenuItem.getActionView();
+        MenuItem actionSearch = menu.findItem( R.id.action_search);
+        mSearchView = (SearchView) actionSearch.getActionView();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchArtistPresenter.newSearch(query);
+                searchArtistPresenter.search(query);
                 return false;
             }
 
@@ -98,22 +87,36 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.O
             }
         });
 
-        searchArtistPresenter.newSearch("cher");
-
         return true;
     }
 
-    public void setEmptyViewVisibility(boolean showEmptyView) {
-        if (showEmptyView) {
-            mRecyclerView.setAdapter(null);
+    @Override
+    public void showNoResults() {
+        mProgressBarView.setVisibility(View.GONE);
+        mEmptyView.setText(mNoResults);
+        mEmptyView.setVisibility(View.VISIBLE);
 
-            mProgressBarView.setVisibility(View.GONE);
+        mRecyclerView.setAdapter(null);
+    }
 
-            mEmptyView.setText(mNoResults);
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-            mProgressBarView.setVisibility(View.VISIBLE);
-        }
+    @Override
+    public void showResults() {
+        mEmptyView.setVisibility(View.GONE);
+        mProgressBarView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoading() {
+        mProgressBarView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setPresenter(SearchContract.Presenter presenter) {
+        mSearchPresenter = presenter;
+    }
+
+    @Override
+    public void goToArtistDetailActivity(Intent intent, Bundle bundle) {
+        startActivity(intent, bundle);
     }
 }

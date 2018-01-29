@@ -1,6 +1,6 @@
 package ainhoamoreno.com.lastfm.repository;
 
-import ainhoamoreno.com.lastfm.data.artist.search.Artist;
+import ainhoamoreno.com.lastfm.model.artist.search.Artist;
 import ainhoamoreno.com.lastfm.network.LastFmService;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -25,7 +25,7 @@ public class ArtistRepository {
     }
 
 
-    public Observable<ainhoamoreno.com.lastfm.data.artist.getInfo.Artist> getInfo(String mbid) {
+    public Observable<ainhoamoreno.com.lastfm.model.artist.getInfo.Artist> getInfo(String mbid) {
         return service.getArtistInfo(mbid)
                 .subscribeOn(Schedulers.io())
                 .filter(artistSearch -> artistSearch != null

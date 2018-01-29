@@ -1,10 +1,10 @@
 
-package ainhoamoreno.com.lastfm.artist.model;
+package ainhoamoreno.com.lastfm.artist.mapper;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ArtistItem implements Parcelable {
+public class ArtistMapper implements Parcelable {
 
     private final String name;
     private String listeners;
@@ -12,11 +12,11 @@ public class ArtistItem implements Parcelable {
     private String url;
     private String imageUrl = null;
 
-    public ArtistItem(String name) {
+    public ArtistMapper(String name) {
         this.name = name;
     }
 
-    protected ArtistItem(Parcel in) {
+    protected ArtistMapper(Parcel in) {
         name = in.readString();
         listeners = in.readString();
         mbid = in.readString();
@@ -24,15 +24,15 @@ public class ArtistItem implements Parcelable {
         imageUrl = in.readString();
     }
 
-    public static final Creator<ArtistItem> CREATOR = new Creator<ArtistItem>() {
+    public static final Creator<ArtistMapper> CREATOR = new Creator<ArtistMapper>() {
         @Override
-        public ArtistItem createFromParcel(Parcel in) {
-            return new ArtistItem(in);
+        public ArtistMapper createFromParcel(Parcel in) {
+            return new ArtistMapper(in);
         }
 
         @Override
-        public ArtistItem[] newArray(int size) {
-            return new ArtistItem[size];
+        public ArtistMapper[] newArray(int size) {
+            return new ArtistMapper[size];
         }
     };
 
