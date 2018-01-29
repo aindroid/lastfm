@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import ainhoamoreno.com.lastfm.data.model.artist.getInfo.Artist;
 import ainhoamoreno.com.lastfm.data.model.artist.getInfo.Bio;
-import ainhoamoreno.com.lastfm.mapper.ArtistItem;
+import ainhoamoreno.com.lastfm.ui.ArtistItem;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 

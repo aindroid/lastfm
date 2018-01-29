@@ -23,7 +23,7 @@ import ainhoamoreno.com.lastfm.artistdetail.constants.Extras;
 import ainhoamoreno.com.lastfm.common.listeners.PaginationScrollListener;
 import ainhoamoreno.com.lastfm.data.api.LastFmArtistApiImpl;
 import ainhoamoreno.com.lastfm.data.model.artist.search.ImageType;
-import ainhoamoreno.com.lastfm.mapper.ArtistItem;
+import ainhoamoreno.com.lastfm.ui.ArtistItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchArtistPresenter implements SearchContract.Presenter, SearchAdapter.OnArtistClickListener {

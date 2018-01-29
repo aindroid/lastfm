@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.mapper;
+package ainhoamoreno.com.lastfm.ui;
 
 import android.support.annotation.NonNull;
 
