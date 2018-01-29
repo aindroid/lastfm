@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity">
+    tools:context=".search.artist.ArtistDetailActivity">
 
-    <ainhoamoreno.com.lastfm.ui.SquareAppBarLayout
+    <ainhoamoreno.com.lastfm.common.ui.SquareAppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-    </ainhoamoreno.com.lastfm.ui.SquareAppBarLayout>
+    </ainhoamoreno.com.lastfm.common.ui.SquareAppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

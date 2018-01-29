@@ -1,5 +1,5 @@
 
-package ainhoamoreno.com.lastfm.artist.mapper;
+package ainhoamoreno.com.lastfm.search.mapper;
 
 import android.os.Parcel;
 import android.os.Parcelable;

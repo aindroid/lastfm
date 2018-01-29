@@ -3,7 +3,7 @@ package ainhoamoreno.com.lastfm.di;
 import javax.inject.Singleton;
 
 import ainhoamoreno.com.lastfm.network.LastFmRetrofit;
-import ainhoamoreno.com.lastfm.network.LastFmService;
+import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -17,8 +17,8 @@ public class LastFmModule {
 
     @Provides
     @Singleton
-    public LastFmService provideWordService(LastFmRetrofit retrofit) {
-        return retrofit.getRetrofit().create(LastFmService.class);
+    public LastFmArtistApi provideWordService(LastFmRetrofit retrofit) {
+        return retrofit.getRetrofit().create(LastFmArtistApi.class);
     }
 
     @Provides

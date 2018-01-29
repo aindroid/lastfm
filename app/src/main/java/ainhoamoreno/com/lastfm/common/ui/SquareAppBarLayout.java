@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.ui;
+package ainhoamoreno.com.lastfm.common.ui;
 
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;

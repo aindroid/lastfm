@@ -1,57 +1,54 @@
 package ainhoamoreno.com.lastfm.search;
 
-import android.content.Intent;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.artist.constants.Extras;
-import ainhoamoreno.com.lastfm.artist.mapper.ArtistMapper;
-import ainhoamoreno.com.lastfm.artist.ui.ArtistDetailActivity;
-import ainhoamoreno.com.lastfm.common.PaginationScrollListener;
+import ainhoamoreno.com.lastfm.api.LastFmArtistApiImpl;
+import ainhoamoreno.com.lastfm.search.constants.Extras;
+import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
+import ainhoamoreno.com.lastfm.search.artist.ArtistDetailActivity;
+import ainhoamoreno.com.lastfm.common.listeners.PaginationScrollListener;
 import ainhoamoreno.com.lastfm.model.artist.search.Artist;
 import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
-import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-
-/**
- * Created by ainhoa on 28/01/2018.
- */
 
 public class SearchArtistPresenter implements SearchContract.Presenter, SearchAdapter.OnArtistClickListener {
 
-    final SearchActivity activity;
-    final SearchContract.View mSearchView;
-
-    final ArtistRepository repository;
-    SearchAdapter mAdapter;
+    private final SearchContract.View mSearchView;
+    private final LastFmArtistApiImpl mRepository;
     private final List<Artist> mResults = new ArrayList<>();
-    private boolean mIsLoading;
-    private String mArtistName;
 
-    public SearchArtistPresenter(SearchActivity activity, SearchContract.View searchView) {
-        this.activity = activity;
+    private SearchAdapter mAdapter;
+    private boolean mIsLoading;
+    private String mArtistQuery;
+
+    public SearchArtistPresenter(SearchContract.View searchView, LastFmArtistApiImpl repository) {
         mSearchView = searchView;
-        repository = new ArtistRepository(LastFmApplication.get().getService());
+        mRepository = repository;
+//        mRepository = new LastFmArtistApiImpl(LastFmApplication.get().getService());
     }
 
     private void search(int page) {
-        Log.d(SearchArtistPresenter.class.getName(), "search() - page = " + page);
+        Log.e(SearchArtistPresenter.class.getName(),
+                "search() - " + mArtistQuery + " - page = " + page);
 
         mSearchView.showLoading();
 
         mIsLoading = true;
 
-        repository.getSearch(mArtistName, page)
+        mRepository.getSearch(mArtistQuery, page)
                 .doOnNext(mResults::add)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> {
@@ -67,54 +64,19 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
                 .subscribe(artist -> mAdapter.setData(mResults));
     }
 
-    public void setUpRecyclerView(@IdRes int viewId) {
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-//        activity.mRecyclerView.setHasFixedSize(true);
-
-        activity.mRecyclerView.setAdapter(null);
-
-        final LinearLayoutManager layoutManager;
-        final @ImageType.Type String type;
-        switch (viewId) {
-            case R.id.smallRb:
-                type = ImageType.SMALL;
-                layoutManager = new GridLayoutManager(activity, 3);
-                break;
-            case R.id.mediumRb:
-                type = ImageType.MEDIUM;
-                layoutManager = new GridLayoutManager(activity, 2);
-                break;
-            default:
-                type = ImageType.LARGE;
-                layoutManager = new LinearLayoutManager(activity);
-                break;
-        }
-
-        activity.mRecyclerView.setLayoutManager(layoutManager);
-        activity.mRecyclerView.addOnScrollListener(new ArtistsScrollListener(layoutManager));
-
-        mAdapter = new SearchAdapter(type, this);
-        activity.mRecyclerView.setAdapter(mAdapter);
-    }
-
     @Override
     public void onClick(int position, ArtistMapper artistItem, ImageView imageView) {
-        Intent intent = new Intent(activity, ArtistDetailActivity.class);
-        intent.putExtra(Extras.EXTRA_ARTIST_ITEM, artistItem);
-        intent.putExtra(Extras.EXTRA_ARTIST_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(imageView));
-
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                activity,
-                imageView,
+        Bundle extras = new Bundle();
+        extras.putParcelable(Extras.EXTRA_ARTIST_ITEM, artistItem);
+        extras.putString(Extras.EXTRA_ARTIST_IMAGE_TRANSITION_NAME,
                 ViewCompat.getTransitionName(imageView));
 
-        mSearchView.goToArtistDetailActivity(intent, options.toBundle());
+        mSearchView.openRecyclerViewItem(ArtistDetailActivity.class, extras, imageView);
     }
 
     @Override
     public void search(String artistName) {
-        mArtistName = artistName;
+        mArtistQuery = artistName;
 
         mResults.clear();
 
@@ -122,8 +84,57 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
     }
 
     @Override
-    public void onImgSizeSelectionChanged() {
+    public void onImgSizeSelectionChanged(@IdRes int viewId) {
 
+        final @ImageType.Type String imgType;
+        switch (viewId) {
+            case R.id.smallRb:
+                imgType = ImageType.SMALL;
+                break;
+            case R.id.mediumRb:
+                imgType = ImageType.MEDIUM;
+                break;
+            default:
+                imgType = ImageType.LARGE;
+                break;
+        }
+
+        changeImgSizeSelection(imgType);
+    }
+
+    private void changeImgSizeSelection(@ImageType.Type String imgType) {
+        if (!TextUtils.isEmpty(mArtistQuery)) {
+            createRecyclerViewAdapter(imgType);
+
+            search(mArtistQuery);
+        }
+    }
+
+    @Override
+    public void createRecyclerViewAdapter(@ImageType.Type String imgType) {
+        Context context = mSearchView.getContext();
+        RecyclerView recyclerView = mSearchView.getRecyclerView();
+
+        recyclerView.setAdapter(null);
+
+        final LinearLayoutManager layoutManager;
+        switch (imgType) {
+            case ImageType.SMALL:
+                layoutManager = new GridLayoutManager(context, 3);
+                break;
+            case ImageType.MEDIUM:
+                layoutManager = new GridLayoutManager(context, 2);
+                break;
+            default:
+                layoutManager = new LinearLayoutManager(context);
+                break;
+        }
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new ArtistsScrollListener(layoutManager));
+
+        mAdapter = new SearchAdapter(imgType, this);
+        recyclerView.setAdapter(mAdapter);
     }
 
     class ArtistsScrollListener extends PaginationScrollListener {

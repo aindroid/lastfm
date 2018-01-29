@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 import ainhoamoreno.com.lastfm.di.ActivityBuilderModule;
 import ainhoamoreno.com.lastfm.di.AppModule;
 import ainhoamoreno.com.lastfm.di.LastFmModule;
-import ainhoamoreno.com.lastfm.network.LastFmService;
+import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
 import dagger.BindsInstance;
 import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
@@ -17,7 +17,7 @@ import dagger.android.support.DaggerApplication;
 public class LastFmApplication extends DaggerApplication {
 
     @Inject
-    LastFmService service;
+    LastFmArtistApi service;
 
     private static LastFmApplication sApplication;
 
@@ -53,7 +53,7 @@ public class LastFmApplication extends DaggerApplication {
         sApplication = this;
     }
 
-    public LastFmService getService() {
+    public LastFmArtistApi getService() {
         return service;
     }
 

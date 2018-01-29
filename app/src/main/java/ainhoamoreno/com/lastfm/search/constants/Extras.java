@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.artist.constants;
+package ainhoamoreno.com.lastfm.search.constants;
 
 /**
  * Created by ainhoa on 29/01/2018.

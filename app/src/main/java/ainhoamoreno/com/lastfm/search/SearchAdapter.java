@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.artist.mapper.ArtistMapper;
+import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
 import ainhoamoreno.com.lastfm.model.artist.search.Artist;
 import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
 import butterknife.BindDimen;

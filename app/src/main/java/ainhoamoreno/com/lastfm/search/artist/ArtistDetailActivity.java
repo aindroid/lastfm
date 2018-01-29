@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.artist.ui;
+package ainhoamoreno.com.lastfm.search.artist;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -15,10 +15,10 @@ import com.squareup.picasso.Target;
 
 import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.artist.constants.Extras;
-import ainhoamoreno.com.lastfm.artist.mapper.ArtistMapper;
+import ainhoamoreno.com.lastfm.api.LastFmArtistApiImpl;
+import ainhoamoreno.com.lastfm.search.constants.Extras;
+import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
 import ainhoamoreno.com.lastfm.model.artist.getInfo.Bio;
-import ainhoamoreno.com.lastfm.repository.ArtistRepository;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +32,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
     @BindColor(android.R.color.transparent) int mTransparent;
 
-    ArtistRepository repository;
+    LastFmArtistApiImpl repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        repository = new ArtistRepository(LastFmApplication.get().getService());
+        repository = new LastFmArtistApiImpl(LastFmApplication.get().getService());
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

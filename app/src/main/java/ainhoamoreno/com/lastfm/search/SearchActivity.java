@@ -1,12 +1,16 @@
 package ainhoamoreno.com.lastfm.search;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,13 +18,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import ainhoamoreno.com.lastfm.R;
+import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SearchActivity extends AppCompatActivity implements SearchContract.View {
 
-    SearchContract.Presenter mSearchPresenter;
+    SearchContract.Presenter searchArtistPresenter;
 
     private SearchView mSearchView;
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -31,8 +36,6 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @BindString(R.string.search_no_results) String mNoResults;
 
-    SearchArtistPresenter searchArtistPresenter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,21 +45,17 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
         setSupportActionBar(mToolbar);
 
-        searchArtistPresenter = new SearchArtistPresenter(this, this);
+//        searchArtistPresenter = new SearchArtistPresenter(this, this);
 
+        mRadioGroup.check(R.id.mediumRb);
+        mRadioGroup.setOnCheckedChangeListener((group, checkedId) ->
+                searchArtistPresenter.onImgSizeSelectionChanged(checkedId)
+        );
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
-
-        searchArtistPresenter.setUpRecyclerView(R.id.mediumRb);
-
-        mRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            String query = mSearchView.getQuery().toString();
-
-            if (!TextUtils.isEmpty(query)) {
-                searchArtistPresenter.setUpRecyclerView(checkedId);
-
-                searchArtistPresenter.search(query);
-            }
-        });
+        searchArtistPresenter.createRecyclerViewAdapter(ImageType.MEDIUM);
     }
 
     @Override
@@ -91,6 +90,11 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     }
 
     @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
     public void showNoResults() {
         mProgressBarView.setVisibility(View.GONE);
         mEmptyView.setText(mNoResults);
@@ -112,11 +116,27 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public void setPresenter(SearchContract.Presenter presenter) {
-        mSearchPresenter = presenter;
+        searchArtistPresenter = presenter;
     }
 
     @Override
-    public void goToArtistDetailActivity(Intent intent, Bundle bundle) {
-        startActivity(intent, bundle);
+    public void openRecyclerViewItem(@NonNull Class<? extends Activity> intentClass,
+                                     @NonNull Bundle extras,
+                                     @NonNull View transitionView) {
+
+        Intent intent = new Intent(this, intentClass);
+        intent.putExtras(extras);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                transitionView,
+                ViewCompat.getTransitionName(transitionView));
+
+        startActivity(intent, options.toBundle());
+    }
+
+    @Override
+    public RecyclerView getRecyclerView() {
+        return mRecyclerView;
     }
 }

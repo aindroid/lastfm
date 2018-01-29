@@ -1,15 +1,17 @@
-package ainhoamoreno.com.lastfm.repository;
+package ainhoamoreno.com.lastfm.api;
 
 import ainhoamoreno.com.lastfm.model.artist.search.Artist;
-import ainhoamoreno.com.lastfm.network.LastFmService;
+import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ArtistRepository {
+public class LastFmArtistApiImpl {
 
-    final LastFmService service;
+    //fixme this is the interactor
 
-    public ArtistRepository(LastFmService service) {
+    final LastFmArtistApi service;
+
+    public LastFmArtistApiImpl(LastFmArtistApi service) {
         this.service = service;
     }
 
