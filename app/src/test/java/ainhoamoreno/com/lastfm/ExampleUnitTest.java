@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import ainhoamoreno.com.lastfm.model.artist.search.ArtistSearch;
-import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
-import ainhoamoreno.com.lastfm.api.LastFmArtistApiImpl;
+import ainhoamoreno.com.lastfm.data.model.artist.search.ArtistSearch;
+import ainhoamoreno.com.lastfm.data.api.LastFmArtistApi;
+import ainhoamoreno.com.lastfm.data.api.LastFmArtistApiImpl;
 
 import static org.junit.Assert.*;
 

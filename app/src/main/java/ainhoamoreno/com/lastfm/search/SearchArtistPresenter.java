@@ -18,18 +18,19 @@ import java.util.List;
 import javax.inject.Inject;
 
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.api.LastFmArtistApiImpl;
+import ainhoamoreno.com.lastfm.artistdetail.ArtistDetailActivity;
+import ainhoamoreno.com.lastfm.artistdetail.constants.Extras;
 import ainhoamoreno.com.lastfm.common.listeners.PaginationScrollListener;
-import ainhoamoreno.com.lastfm.model.artist.search.Artist;
-import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
-import ainhoamoreno.com.lastfm.search.artist.ArtistDetailActivity;
-import ainhoamoreno.com.lastfm.search.constants.Extras;
-import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
+import ainhoamoreno.com.lastfm.data.api.LastFmArtistApiImpl;
+import ainhoamoreno.com.lastfm.data.model.artist.search.ImageType;
+import ainhoamoreno.com.lastfm.mapper.ArtistItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchArtistPresenter implements SearchContract.Presenter, SearchAdapter.OnArtistClickListener {
 
-    private final List<Artist> mResults = new ArrayList<>();
+    private static final String TAG = SearchArtistPresenter.class.getSimpleName();
+
+    private final List<ArtistItem> mResults = new ArrayList<>();
     private final SearchContract.View mSearchView;
     private final LastFmArtistApiImpl mRepository;
 
@@ -43,34 +44,12 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
         mRepository = repository;
     }
 
-    private void search(int page) {
-        Log.e(SearchArtistPresenter.class.getName(),
-                "search() - " + mArtistQuery + " - page = " + page);
-
-        mSearchView.showLoading();
-
-        mIsLoading = true;
-
-        mRepository.getSearch(mArtistQuery, page)
-                .doOnNext(mResults::add)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> {
-
-                    if (mResults.isEmpty()) {
-                        mSearchView.showNoResults();
-                    } else {
-                        mSearchView.showResults();
-                    }
-
-                    mIsLoading = false;
-                })
-                .subscribe(artist -> mAdapter.setData(mResults));
-    }
-
     @Override
-    public void onClick(int position, ArtistMapper artistItem, ImageView imageView) {
+    public void onClick(int position, ArtistItem artistItem, ImageView imageView) {
         Bundle extras = new Bundle();
-        extras.putParcelable(Extras.EXTRA_ARTIST_ITEM, artistItem);
+        extras.putString(Extras.EXTRA_ARTIST_NAME, artistItem.getName());
+        extras.putString(Extras.EXTRA_ARTIST_IMG_URL, artistItem.getImageUrl());
+        extras.putString(Extras.EXTRA_ARTIST_MBID, artistItem.getMbid());
         extras.putString(Extras.EXTRA_ARTIST_IMAGE_TRANSITION_NAME,
                 ViewCompat.getTransitionName(imageView));
 
@@ -102,15 +81,9 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
                 break;
         }
 
+        Log.d(TAG, "Image size selection changed to " + imgType);
+
         changeImgSizeSelection(imgType);
-    }
-
-    private void changeImgSizeSelection(@ImageType.Type String imgType) {
-        if (!TextUtils.isEmpty(mArtistQuery)) {
-            setUpRecyclerView(imgType);
-
-            search(mArtistQuery);
-        }
     }
 
     @Override
@@ -140,25 +113,55 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
         recyclerView.setAdapter(mAdapter);
     }
 
+    private void search(int page) {
+        Log.d(TAG, "search() - " + mArtistQuery + " - page = " + page);
+
+        mSearchView.showLoading();
+
+        mIsLoading = true;
+
+        mRepository.searchArtists(mArtistQuery, page)
+                .doOnNext(mResults::add)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> {
+
+                    if (mResults.isEmpty()) {
+                        mSearchView.showNoResults();
+                    } else {
+                        mSearchView.showResults();
+                    }
+
+                    mIsLoading = false;
+                })
+                .subscribe(artist -> mAdapter.setData(mResults));
+    }
+
+    private void changeImgSizeSelection(@ImageType.Type String imgType) {
+        if (!TextUtils.isEmpty(mArtistQuery)) {
+            setUpRecyclerView(imgType);
+
+            search(mArtistQuery);
+        }
+    }
+
     class ArtistsScrollListener extends PaginationScrollListener {
 
-        private int mPage;
+        private final int mPage = 1;
 
         private ArtistsScrollListener(LinearLayoutManager layoutManager) {
             super(layoutManager);
-
-            mPage = 1;
         }
 
         @Override
         protected void loadMoreItems() {
-            mPage ++;
+            int nextPage = mPage + 1;
 
-            search(mPage);
+            search(nextPage);
         }
 
         @Override
         public boolean isLastPage() {
+            // todo this needs implementing
             return false;
         }
 

@@ -1,45 +1,16 @@
 package ainhoamoreno.com.lastfm;
 
-import android.app.Application;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import ainhoamoreno.com.lastfm.di.ActivityBuilderModule;
-import ainhoamoreno.com.lastfm.di.AppModule;
-import ainhoamoreno.com.lastfm.di.LastFmModule;
-import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
-import dagger.BindsInstance;
-import dagger.Component;
+import ainhoamoreno.com.lastfm.di.component.DaggerAppComponent;
 import dagger.android.AndroidInjector;
-import dagger.android.support.AndroidSupportInjectionModule;
 import dagger.android.support.DaggerApplication;
 
 public class LastFmApplication extends DaggerApplication {
 
-    @Inject
-    LastFmArtistApi service;
-
     private static LastFmApplication sApplication;
-
-    @Singleton
-    @Component(modules = {
-                    AndroidSupportInjectionModule.class,
-                    ActivityBuilderModule.class,
-                    LastFmModule.class,
-                    AppModule.class})
-    interface AppComponent extends AndroidInjector<LastFmApplication> {
-
-        @Component.Builder
-        abstract class Builder extends AndroidInjector.Builder<LastFmApplication> {
-            @BindsInstance
-            abstract Builder application(Application application);
-        }
-    }
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return DaggerLastFmApplication_AppComponent.builder()
+        return DaggerAppComponent.builder()
                 .application(this)
                 .create(this);
     }
@@ -49,10 +20,6 @@ public class LastFmApplication extends DaggerApplication {
         super.onCreate();
 
         sApplication = this;
-    }
-
-    public LastFmArtistApi getService() {
-        return service;
     }
 
     public static  LastFmApplication get() {

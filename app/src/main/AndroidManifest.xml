@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".search.artist.ArtistDetailActivity"
+            android:name=".artistdetail.ArtistDetailActivity"
             android:parentActivityName=".search.SearchActivity" />
     </application>
 

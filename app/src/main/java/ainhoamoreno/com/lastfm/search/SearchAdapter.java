@@ -15,16 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.model.artist.search.Artist;
-import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
-import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
+import ainhoamoreno.com.lastfm.data.model.artist.search.ImageType;
+import ainhoamoreno.com.lastfm.mapper.ArtistItem;
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    private final List<Artist> mResults = new ArrayList<>();
+    private final List<ArtistItem> mResults = new ArrayList<>();
     private final OnArtistClickListener mOnArtistClickListener;
     private final @ImageType.Type String mImageType;
 
@@ -76,12 +75,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Artist artist = mResults.get(position);
+        ArtistItem artist = mResults.get(position);
         holder.mTextView.setText(artist.getName());
 
         ViewCompat.setTransitionName(holder.mImageView, artist.getName());
 
-        String url = artist.getLargeImageUrl();
+        String url = artist.getImageUrl();
         if (!TextUtils.isEmpty(url)) {
             Picasso.with(holder.mImageView.getContext())
                     .load(url)
@@ -89,8 +88,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
 
         holder.mView.setOnClickListener(v -> {
-            ArtistMapper artistItem = ArtistMapper.convert(artist);
-            mOnArtistClickListener.onClick(position, artistItem, holder.mImageView);
+            mOnArtistClickListener.onClick(position, artist, holder.mImageView);
         });
     }
 
@@ -99,7 +97,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return mResults.size();
     }
 
-    public void setData(List<Artist> data) {
+    public void setData(List<ArtistItem> data) {
         mResults.clear();
         mResults.addAll(data);
 
@@ -107,6 +105,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     interface OnArtistClickListener {
-        void onClick(int position, ArtistMapper artistItem, ImageView imageView);
+        void onClick(int position, ArtistItem artistItem, ImageView imageView);
     }
 }

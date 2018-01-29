@@ -19,7 +19,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
+import ainhoamoreno.com.lastfm.data.model.artist.search.ImageType;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
