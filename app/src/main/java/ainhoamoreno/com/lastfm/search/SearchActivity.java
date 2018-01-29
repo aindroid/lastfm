@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -17,17 +16,21 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class SearchActivity extends AppCompatActivity implements SearchContract.View {
+public class SearchActivity extends DaggerAppCompatActivity implements SearchContract.View {
 
-    SearchContract.Presenter searchArtistPresenter;
+    @Inject SearchContract.Presenter searchArtistPresenter;
 
     private SearchView mSearchView;
+
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.radioGroup) RadioGroup mRadioGroup;
     @BindView(R.id.toolbar) Toolbar mToolbar;
@@ -45,17 +48,14 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
         setSupportActionBar(mToolbar);
 
-//        searchArtistPresenter = new SearchArtistPresenter(this, this);
-
         mRadioGroup.check(R.id.mediumRb);
         mRadioGroup.setOnCheckedChangeListener((group, checkedId) ->
                 searchArtistPresenter.onImgSizeSelectionChanged(checkedId)
         );
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
+        // changes in content will not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
-        searchArtistPresenter.createRecyclerViewAdapter(ImageType.MEDIUM);
+        searchArtistPresenter.setUpRecyclerView(ImageType.MEDIUM);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate( R.menu.search_activity, menu);
+        getMenuInflater().inflate(R.menu.search_activity, menu);
 
         MenuItem actionSearch = menu.findItem( R.id.action_search);
         mSearchView = (SearchView) actionSearch.getActionView();
@@ -112,11 +112,6 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     @Override
     public void showLoading() {
         mProgressBarView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setPresenter(SearchContract.Presenter presenter) {
-        searchArtistPresenter = presenter;
     }
 
     @Override

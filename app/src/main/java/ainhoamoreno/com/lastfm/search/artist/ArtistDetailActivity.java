@@ -1,38 +1,34 @@
 package ainhoamoreno.com.lastfm.search.artist;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import javax.inject.Inject;
 
-import ainhoamoreno.com.lastfm.LastFmApplication;
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.api.LastFmArtistApiImpl;
 import ainhoamoreno.com.lastfm.search.constants.Extras;
 import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
-import ainhoamoreno.com.lastfm.model.artist.getInfo.Bio;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class ArtistDetailActivity extends AppCompatActivity {
+public class ArtistDetailActivity extends DaggerAppCompatActivity implements ArtistContract.View {
+
+    @Inject ArtistContract.Presenter mPresenter;
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.imageViewDetail) ImageView mImageView;
     @BindView(R.id.contentView) TextView mContentView;
 
     @BindColor(android.R.color.transparent) int mTransparent;
-
-    LastFmArtistApiImpl repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +38,6 @@ public class ArtistDetailActivity extends AppCompatActivity {
         supportPostponeEnterTransition();
 
         ButterKnife.bind(this);
-
-        repository = new LastFmArtistApiImpl(LastFmApplication.get().getService());
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,46 +55,28 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
         String imageUrl = animalItem.getImageUrl();
         if (!TextUtils.isEmpty(imageUrl)) {
-            loadImage(imageUrl);
+            mPresenter.loadImage(imageUrl);
         }
 
-        getInfo(animalItem.getMbid());
+        mPresenter.getArtistInfo(animalItem.getMbid());
     }
 
-    private void getInfo(final String mbid) {
-        repository.getInfo(mbid)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(artist -> {
-                    Bio bio = artist.bio;
-                    if (!TextUtils.isEmpty(bio.content)) {
-                        mContentView.setText(bio.content);
-                    } else if (TextUtils.isEmpty(bio.summary)) {
-                        mContentView.setText(bio.summary);
-                    } else {
-                        mContentView.setText("No content");
-                    }
-                });
+    @Override
+    public void updateArtistImg(@Nullable final Bitmap bitmap) {
+        if (bitmap != null) {
+            mImageView.setImageBitmap(bitmap);
+        }
+
+        supportStartPostponedEnterTransition();
     }
 
-    private void loadImage(final String imageUrl) {
-        Picasso.with(this)
-                .load(imageUrl)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        mImageView.setImageBitmap(bitmap);
-                        supportStartPostponedEnterTransition();
-                    }
+    @Override
+    public void updateArtistContent(String content) {
+        mContentView.setText(content);
+    }
 
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-                        supportStartPostponedEnterTransition();
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
+    @Override
+    public Context getContext() {
+        return this;
     }
 }

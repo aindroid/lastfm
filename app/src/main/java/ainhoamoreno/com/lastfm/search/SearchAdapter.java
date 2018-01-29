@@ -15,16 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ainhoamoreno.com.lastfm.R;
-import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
 import ainhoamoreno.com.lastfm.model.artist.search.Artist;
 import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
+import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-/**
- * Created by ainhoa on 24/01/2018.
- */
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
@@ -32,7 +28,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private final OnArtistClickListener mOnArtistClickListener;
     private final @ImageType.Type String mImageType;
 
-    public SearchAdapter(@ImageType.Type String imageType, OnArtistClickListener listener) {
+    SearchAdapter(@ImageType.Type String imageType, OnArtistClickListener listener) {
         mImageType = imageType;
         mOnArtistClickListener = listener;
     }
@@ -47,7 +43,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         @BindDimen(R.dimen.medium_img_size) float mediumImgSize;
         @BindDimen(R.dimen.large_img_size) float largeImgSize;
 
-        public ViewHolder(View v, @ImageType.Type String imageType) {
+        ViewHolder(View v, @ImageType.Type String imageType) {
             super(v);
 
             ButterKnife.bind(this, v);
@@ -85,7 +81,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         ViewCompat.setTransitionName(holder.mImageView, artist.getName());
 
-        String url = artist.getLargeImage().text; //300x300
+        String url = artist.getLargeImageUrl();
         if (!TextUtils.isEmpty(url)) {
             Picasso.with(holder.mImageView.getContext())
                     .load(url)
@@ -93,9 +89,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
 
         holder.mView.setOnClickListener(v -> {
-            ArtistMapper artistItem = new ArtistMapper(artist.getName());
-            artistItem.setImageUrl(url);
-            artistItem.setMbid(artist.getMbid());
+            ArtistMapper artistItem = ArtistMapper.convert(artist);
             mOnArtistClickListener.onClick(position, artistItem, holder.mImageView);
         });
     }

@@ -4,6 +4,8 @@ package ainhoamoreno.com.lastfm.search.mapper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import ainhoamoreno.com.lastfm.model.artist.search.Artist;
+
 public class ArtistMapper implements Parcelable {
 
     private final String name;
@@ -12,11 +14,11 @@ public class ArtistMapper implements Parcelable {
     private String url;
     private String imageUrl = null;
 
-    public ArtistMapper(String name) {
+    private ArtistMapper(String name) {
         this.name = name;
     }
 
-    protected ArtistMapper(Parcel in) {
+    private ArtistMapper(Parcel in) {
         name = in.readString();
         listeners = in.readString();
         mbid = in.readString();
@@ -68,5 +70,12 @@ public class ArtistMapper implements Parcelable {
 
     public void setMbid(String mbid) {
         this.mbid = mbid;
+    }
+
+    public static ArtistMapper convert(Artist artist) {
+        ArtistMapper artistMapper = new ArtistMapper(artist.getName());
+        artistMapper.setImageUrl(artist.getLargeImageUrl());
+        artistMapper.setMbid(artist.getMbid());
+        return artistMapper;
     }
 }

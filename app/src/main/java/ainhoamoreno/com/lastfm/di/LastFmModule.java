@@ -2,14 +2,14 @@ package ainhoamoreno.com.lastfm.di;
 
 import javax.inject.Singleton;
 
-import ainhoamoreno.com.lastfm.network.LastFmRetrofit;
+import ainhoamoreno.com.lastfm.api.LastFmArtistApiImpl;
 import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
+import ainhoamoreno.com.lastfm.network.LastFmRetrofit;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@Singleton
 @Module(includes = NetworkModule.class)
 public class LastFmModule {
 
@@ -17,14 +17,21 @@ public class LastFmModule {
 
     @Provides
     @Singleton
-    public LastFmArtistApi provideWordService(LastFmRetrofit retrofit) {
+    LastFmRetrofit provideRetrofit(GsonConverterFactory gsonConverterFactory,
+                                          OkHttpClient okHttpClient) {
+        return new LastFmRetrofit(BASE_URL, gsonConverterFactory, okHttpClient);
+    }
+
+    @Provides
+    @Singleton
+    LastFmArtistApi provideLastFmArtistApi(LastFmRetrofit retrofit) {
         return retrofit.getRetrofit().create(LastFmArtistApi.class);
     }
 
     @Provides
     @Singleton
-    public LastFmRetrofit provideRetrofit(GsonConverterFactory gsonConverterFactory,
-                                           OkHttpClient okHttpClient) {
-        return new LastFmRetrofit(BASE_URL, gsonConverterFactory, okHttpClient);
+    LastFmArtistApiImpl provideLastFmArtistApiImpl(LastFmArtistApi lastFmArtistApi) {
+        return new LastFmArtistApiImpl(lastFmArtistApi);
     }
+
 }

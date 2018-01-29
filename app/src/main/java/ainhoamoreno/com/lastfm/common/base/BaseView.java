@@ -1,10 +1,8 @@
 package ainhoamoreno.com.lastfm.common.base;
 
-/**
- * Created by ainhoa on 29/01/2018.
- */
+import android.content.Context;
 
-public interface BaseView<T extends BasePresenter> {
+public interface BaseView {
 
-    void setPresenter(T presenter);
+    Context getContext();
 }

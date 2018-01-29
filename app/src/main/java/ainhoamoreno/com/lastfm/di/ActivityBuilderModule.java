@@ -2,21 +2,29 @@ package ainhoamoreno.com.lastfm.di;
 
 import android.app.Activity;
 
-import ainhoamoreno.com.lastfm.di.component.SearchActivitySubcomponent;
 import ainhoamoreno.com.lastfm.search.SearchActivity;
+import ainhoamoreno.com.lastfm.search.artist.ArtistDetailActivity;
+import ainhoamoreno.com.lastfm.search.artist.di.ArtistDetailActivityComponent;
+import ainhoamoreno.com.lastfm.search.di.SearchActivityComponent;
 import dagger.Binds;
 import dagger.Module;
 import dagger.android.ActivityKey;
 import dagger.android.AndroidInjector;
 import dagger.multibindings.IntoMap;
 
-@Module (subcomponents = SearchActivitySubcomponent.class)
+@Module (subcomponents = SearchActivityComponent.class)
 public abstract class ActivityBuilderModule {
 
     @Binds
     @IntoMap
     @ActivityKey(SearchActivity.class)
     abstract AndroidInjector.Factory<? extends Activity>
-    bindMainActivityInjectorFactory(SearchActivitySubcomponent.Builder builder);
+    bindMainActivityInjectorFactory(SearchActivityComponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @ActivityKey(ArtistDetailActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity>
+    bindMainActivity(ArtistDetailActivityComponent.Builder builder);
 
 }

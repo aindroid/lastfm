@@ -17,19 +17,20 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@Singleton
 @Module
 public class NetworkModule {
 
     @Provides
-    public GsonConverterFactory provideGsonFactory() {
+    @Singleton
+    GsonConverterFactory provideGsonFactory() {
         Gson gson = new Gson();
 
         return GsonConverterFactory.create(gson);
     }
 
     @Provides
-    public OkHttpClient provideOkHttpClient(Interceptor interceptor) {
+    @Singleton
+    OkHttpClient provideOkHttpClient(Interceptor interceptor) {
         return new OkHttpClient()
                 .newBuilder()
                 .addNetworkInterceptor(interceptor)
@@ -37,7 +38,8 @@ public class NetworkModule {
     }
 
     @Provides
-    public Interceptor provideInterceptor() {
+    @Singleton
+    Interceptor provideInterceptor() {
         return new LoggingInterceptor();
     }
 

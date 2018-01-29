@@ -10,6 +10,7 @@ import ainhoamoreno.com.lastfm.di.AppModule;
 import ainhoamoreno.com.lastfm.di.LastFmModule;
 import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
 import dagger.BindsInstance;
+import dagger.Component;
 import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 import dagger.android.support.DaggerApplication;
@@ -21,18 +22,15 @@ public class LastFmApplication extends DaggerApplication {
 
     private static LastFmApplication sApplication;
 
-    @dagger.Component(
-            modules = {
+    @Singleton
+    @Component(modules = {
                     AndroidSupportInjectionModule.class,
                     ActivityBuilderModule.class,
                     LastFmModule.class,
-                    AppModule.class
-            }
-    )
+                    AppModule.class})
+    interface AppComponent extends AndroidInjector<LastFmApplication> {
 
-    @Singleton
-    interface Component extends AndroidInjector<LastFmApplication> {
-        @dagger.Component.Builder
+        @Component.Builder
         abstract class Builder extends AndroidInjector.Builder<LastFmApplication> {
             @BindsInstance
             abstract Builder application(Application application);
@@ -41,7 +39,7 @@ public class LastFmApplication extends DaggerApplication {
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return DaggerLastFmApplication_Component.builder()
+        return DaggerLastFmApplication_AppComponent.builder()
                 .application(this)
                 .create(this);
     }

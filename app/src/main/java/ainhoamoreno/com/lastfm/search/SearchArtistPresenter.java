@@ -3,6 +3,7 @@ package ainhoamoreno.com.lastfm.search;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,30 +15,32 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.api.LastFmArtistApiImpl;
-import ainhoamoreno.com.lastfm.search.constants.Extras;
-import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
-import ainhoamoreno.com.lastfm.search.artist.ArtistDetailActivity;
 import ainhoamoreno.com.lastfm.common.listeners.PaginationScrollListener;
 import ainhoamoreno.com.lastfm.model.artist.search.Artist;
 import ainhoamoreno.com.lastfm.model.artist.search.ImageType;
+import ainhoamoreno.com.lastfm.search.artist.ArtistDetailActivity;
+import ainhoamoreno.com.lastfm.search.constants.Extras;
+import ainhoamoreno.com.lastfm.search.mapper.ArtistMapper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class SearchArtistPresenter implements SearchContract.Presenter, SearchAdapter.OnArtistClickListener {
 
+    private final List<Artist> mResults = new ArrayList<>();
     private final SearchContract.View mSearchView;
     private final LastFmArtistApiImpl mRepository;
-    private final List<Artist> mResults = new ArrayList<>();
 
     private SearchAdapter mAdapter;
     private boolean mIsLoading;
     private String mArtistQuery;
 
+    @Inject
     public SearchArtistPresenter(SearchContract.View searchView, LastFmArtistApiImpl repository) {
         mSearchView = searchView;
         mRepository = repository;
-//        mRepository = new LastFmArtistApiImpl(LastFmApplication.get().getService());
     }
 
     private void search(int page) {
@@ -75,7 +78,7 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
     }
 
     @Override
-    public void search(String artistName) {
+    public void search(@NonNull String artistName) {
         mArtistQuery = artistName;
 
         mResults.clear();
@@ -104,14 +107,14 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
 
     private void changeImgSizeSelection(@ImageType.Type String imgType) {
         if (!TextUtils.isEmpty(mArtistQuery)) {
-            createRecyclerViewAdapter(imgType);
+            setUpRecyclerView(imgType);
 
             search(mArtistQuery);
         }
     }
 
     @Override
-    public void createRecyclerViewAdapter(@ImageType.Type String imgType) {
+    public void setUpRecyclerView(@ImageType.Type String imgType) {
         Context context = mSearchView.getContext();
         RecyclerView recyclerView = mSearchView.getRecyclerView();
 
@@ -141,7 +144,7 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
 
         private int mPage;
 
-        public ArtistsScrollListener(LinearLayoutManager layoutManager) {
+        private ArtistsScrollListener(LinearLayoutManager layoutManager) {
             super(layoutManager);
 
             mPage = 1;

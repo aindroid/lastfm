@@ -60,8 +60,9 @@ public class Artist {
         return image.size() > 1 ? image.get(1) : null;
     }
 
-    public Image getLargeImage() {
-        return image.size() > 2 ? image.get(2) : null;
+    public String getLargeImageUrl() {
+        //300x300
+        return image.size() > 2 ? image.get(2).text : null;
     }
 
 

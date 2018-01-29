@@ -1,5 +1,7 @@
 package ainhoamoreno.com.lastfm.api;
 
+import javax.inject.Inject;
+
 import ainhoamoreno.com.lastfm.model.artist.search.Artist;
 import ainhoamoreno.com.lastfm.network.LastFmArtistApi;
 import io.reactivex.Observable;
@@ -7,10 +9,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class LastFmArtistApiImpl {
 
-    //fixme this is the interactor
+    LastFmArtistApi service;
 
-    final LastFmArtistApi service;
-
+    @Inject
     public LastFmArtistApiImpl(LastFmArtistApi service) {
         this.service = service;
     }

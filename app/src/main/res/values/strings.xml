@@ -1,10 +1,15 @@
 <resources>
+
     <string name="app_name">LastFm</string>
 
+    <!--search activity-->
     <string name="search_no_results">No results</string>
     <string name="search_start_searching">Search for an artist...</string>
     <string name="search_img_small">S</string>
     <string name="search_img_medium">M</string>
     <string name="search_img_large">L</string>
+
+     <!--artist detail activity-->
+    <string name="artist_no_content">No content</string>
 
 </resources>
