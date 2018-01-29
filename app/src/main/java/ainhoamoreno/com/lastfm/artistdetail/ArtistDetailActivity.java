@@ -38,17 +38,12 @@ public class ArtistDetailActivity extends DaggerAppCompatActivity implements Art
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(false);
-
         Bundle extras = getIntent().getExtras();
         String artistName = extras.getString(Extras.EXTRA_ARTIST_NAME);
         String imageUrl = extras.getString(Extras.EXTRA_ARTIST_IMG_URL);
         String mbid = extras.getString(Extras.EXTRA_ARTIST_MBID);
 
-        mToolbar.setTitle(artistName);
-        mToolbar.setBackgroundColor(mTransparent);
+        setUpToolbar(artistName);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             String imageTransitionName = extras.getString(Extras.EXTRA_ARTIST_IMAGE_TRANSITION_NAME);
@@ -60,6 +55,15 @@ public class ArtistDetailActivity extends DaggerAppCompatActivity implements Art
         }
 
         mPresenter.getArtistInfo(mbid);
+    }
+
+    @Override
+    public void setUpToolbar(String title) {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(false);
+        mToolbar.setTitle(title);
+        mToolbar.setBackgroundColor(mTransparent);
     }
 
     @Override
@@ -79,5 +83,12 @@ public class ArtistDetailActivity extends DaggerAppCompatActivity implements Art
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        mPresenter.unSubscribe();
     }
 }

@@ -22,9 +22,10 @@ import ainhoamoreno.com.lastfm.artistdetail.ArtistDetailActivity;
 import ainhoamoreno.com.lastfm.artistdetail.constants.Extras;
 import ainhoamoreno.com.lastfm.common.listeners.PaginationScrollListener;
 import ainhoamoreno.com.lastfm.data.api.LastFmArtistApiImpl;
-import ainhoamoreno.com.lastfm.data.model.artist.search.ImageType;
-import ainhoamoreno.com.lastfm.ui.ArtistItem;
+import ainhoamoreno.com.lastfm.data.model.artist.ImageType;
+import ainhoamoreno.com.lastfm.entity.ArtistItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 public class SearchArtistPresenter implements SearchContract.Presenter, SearchAdapter.OnArtistClickListener {
 
@@ -37,6 +38,8 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
     private SearchAdapter mAdapter;
     private boolean mIsLoading;
     private String mArtistQuery;
+
+    private Disposable mDisposable;
 
     @Inject
     public SearchArtistPresenter(SearchContract.View searchView, LastFmArtistApiImpl repository) {
@@ -62,7 +65,7 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
 
         mResults.clear();
 
-        search(1);
+        subscribeToSearch(1);
     }
 
     @Override
@@ -113,14 +116,14 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void search(int page) {
+    private void subscribeToSearch(int page) {
         Log.d(TAG, "search() - " + mArtistQuery + " - page = " + page);
 
         mSearchView.showLoading();
 
         mIsLoading = true;
 
-        mRepository.searchArtists(mArtistQuery, page)
+        mDisposable = mRepository.searchArtists(mArtistQuery, page)
                 .doOnNext(mResults::add)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> {
@@ -156,7 +159,7 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
         protected void loadMoreItems() {
             int nextPage = mPage + 1;
 
-            search(nextPage);
+            subscribeToSearch(nextPage);
         }
 
         @Override
@@ -171,4 +174,10 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
         }
     }
 
+    @Override
+    public void unSubscribe() {
+        if (mDisposable != null && mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+    }
 }

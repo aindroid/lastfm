@@ -1,5 +1,4 @@
-
-package ainhoamoreno.com.lastfm.data.model.artist.getInfo;
+package ainhoamoreno.com.lastfm.data.model.artist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

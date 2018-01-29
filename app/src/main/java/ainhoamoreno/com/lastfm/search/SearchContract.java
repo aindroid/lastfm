@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 
 import ainhoamoreno.com.lastfm.common.base.BasePresenter;
 import ainhoamoreno.com.lastfm.common.base.BaseView;
-import ainhoamoreno.com.lastfm.data.model.artist.search.ImageType;
+import ainhoamoreno.com.lastfm.data.model.artist.ImageType;
 
 public interface SearchContract {
 

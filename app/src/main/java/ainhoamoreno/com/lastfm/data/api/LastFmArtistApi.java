@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 public interface LastFmArtistApi {
 
     @GET("?method=artist.search&format=json&api_key="+ BuildConfig.FLASH_FM_API_KEY)
-    Observable<ArtistSearch> getArtist(@Query("artist") String name, @Query("page") int page, @Query("limit") int limit);
+    Observable<ArtistSearch> getArtists(@Query("artist") String name, @Query("page") int page, @Query("limit") int limit);
 
     @GET("?method=artist.getinfo&format=json&api_key="+ BuildConfig.FLASH_FM_API_KEY)
     Observable<ArtistGetInfo> getArtistInfo(@Query("mbid") String mbid);

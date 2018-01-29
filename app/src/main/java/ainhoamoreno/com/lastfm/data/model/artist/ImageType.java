@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.data.model.artist.search;
+package ainhoamoreno.com.lastfm.data.model.artist;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.StringDef;
