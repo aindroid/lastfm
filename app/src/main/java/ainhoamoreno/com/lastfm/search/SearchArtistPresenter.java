@@ -46,7 +46,7 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
     }
 
     @Override
-    public void onClick(int position, ArtistItem artistItem, ImageView imageView) {
+    public void onClick(int position, @NonNull ArtistItem artistItem, @NonNull ImageView imageView) {
         Bundle extras = new Bundle();
         extras.putString(Extras.EXTRA_ARTIST_NAME, artistItem.getName());
         extras.putString(Extras.EXTRA_ARTIST_IMG_URL, artistItem.getImageUrl());
@@ -63,7 +63,7 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
     }
 
     @Override
-    public void onImgSizeSelectionChanged(@IdRes int viewId) {
+    public void changeImgSizeSelection(@IdRes int viewId) {
 
         final @ImageType.Type String imgType;
         switch (viewId) {

@@ -1,5 +1,7 @@
 package ainhoamoreno.com.lastfm.domain;
 
+import android.support.annotation.NonNull;
+
 import javax.inject.Inject;
 
 import ainhoamoreno.com.lastfm.data.ArtistService;
@@ -16,7 +18,7 @@ public class ArtistDataProvider {
         mService = service;
     }
 
-    public Observable<ArtistItem> getArtists(String name, int page) {
+    public Observable<ArtistItem> getArtists(@NonNull String name, int page) {
         return mService.getArtists(name, page, 20)
                 .subscribeOn(Schedulers.io())
                 .flatMap(artistSearch -> Observable.
@@ -29,7 +31,7 @@ public class ArtistDataProvider {
     }
 
 
-    public Observable<ArtistItem> getArtistInfo(String mbid) {
+    public Observable<ArtistItem> getArtistInfo(@NonNull String mbid) {
         return mService.getArtistInfo(mbid)
                 .subscribeOn(Schedulers.io())
                 .flatMap(artistGetInfo -> Observable.just(artistGetInfo.getArtist()))
@@ -39,6 +41,5 @@ public class ArtistDataProvider {
                     return Observable.empty();
                 });
     }
-
 
 }

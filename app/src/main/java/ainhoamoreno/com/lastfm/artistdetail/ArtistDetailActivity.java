@@ -1,6 +1,5 @@
 package ainhoamoreno.com.lastfm.artistdetail;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -85,12 +84,7 @@ public class ArtistDetailActivity extends DaggerAppCompatActivity implements Art
         mContentView.setText(content);
     }
 
-    @Override
-    public Context getContext() {
-        return this;
-    }
-
-    public void loadImage(@NonNull final String imageUrl) {
+    public void loadImage(@NonNull String imageUrl) {
         Picasso.with(this)
                 .load(imageUrl)
                 .into(new Target() {

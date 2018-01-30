@@ -79,7 +79,7 @@ public class SearchArtistPresenterTest {
         when(mockDataProvider.getArtists(anyString(), anyInt())).thenReturn(obs);
 
         // when
-        presenter.onImgSizeSelectionChanged(R.id.mediumRb);
+        presenter.changeImgSizeSelection(R.id.mediumRb);
 
         // verify
         verify(mockView).setUpRecyclerView(any());
@@ -89,7 +89,7 @@ public class SearchArtistPresenterTest {
     @Test
     public void onImgSizeSelectionChanged_emptyQueryText() throws Exception {
         // when
-        presenter.onImgSizeSelectionChanged(R.id.mediumRb);
+        presenter.changeImgSizeSelection(R.id.mediumRb);
 
         // verify
         verify(mockView).setUpRecyclerView(any());

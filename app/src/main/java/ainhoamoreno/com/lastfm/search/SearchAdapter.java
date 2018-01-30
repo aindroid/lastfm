@@ -1,5 +1,6 @@
 package ainhoamoreno.com.lastfm.search;
 
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -97,7 +98,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return mResults.size();
     }
 
-    public void setData(List<ArtistItem> data) {
+    public void setData(@NonNull List<ArtistItem> data) {
         mResults.clear();
         mResults.addAll(data);
 
@@ -105,6 +106,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     interface OnArtistClickListener {
-        void onClick(int position, ArtistItem artistItem, ImageView imageView);
+        void onClick(int position, @NonNull ArtistItem artistItem, @NonNull ImageView imageView);
     }
 }

@@ -11,13 +11,13 @@ public interface ArtistDetailContract {
 
     interface View extends BaseView {
 
-        void updateArtistImg(@Nullable final Bitmap bitmap);
+        void updateArtistImg(@Nullable Bitmap bitmap);
 
-        void updateArtistContent(@Nullable final String content);
+        void updateArtistContent(@Nullable String content);
     }
 
     interface Presenter extends BasePresenter {
 
-        void getArtistInfo(@NonNull final String mbid);
+        void getArtistInfo(@NonNull String mbid);
     }
 }

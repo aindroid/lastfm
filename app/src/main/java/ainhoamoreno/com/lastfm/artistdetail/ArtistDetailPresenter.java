@@ -22,7 +22,7 @@ public class ArtistDetailPresenter implements ArtistDetailContract.Presenter {
     }
 
     @Override
-    public void getArtistInfo(@NonNull final String mbid) {
+    public void getArtistInfo(@NonNull String mbid) {
         mDisposable = mDataProvider.getArtistInfo(mbid)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(artist -> mView.updateArtistContent(artist.getContent()));

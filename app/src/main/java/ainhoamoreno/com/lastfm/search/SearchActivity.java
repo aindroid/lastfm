@@ -1,7 +1,6 @@
 package ainhoamoreno.com.lastfm.search;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,7 +56,7 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
 
         mRadioGroup.check(R.id.mediumRb);
         mRadioGroup.setOnCheckedChangeListener((group, checkedId) ->
-                mPresenter.onImgSizeSelectionChanged(checkedId)
+                mPresenter.changeImgSizeSelection(checkedId)
         );
 
         setUpRecyclerView(ImageType.MEDIUM);
@@ -89,14 +88,14 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
         }
 
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addOnScrollListener(new SearchScrollListener(mPresenter, layoutManager));
+        mRecyclerView.addOnScrollListener(new SearchScrollListener(layoutManager, mPresenter));
 
         mAdapter = mPresenter.createAdapter(imgType);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
-    public void updateResults(List<ArtistItem> results) {
+    public void updateResults(@NonNull List<ArtistItem> results) {
         mAdapter.setData(results);
     }
 
@@ -131,11 +130,6 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
         });
 
         return true;
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     @Override

@@ -28,14 +28,14 @@ public interface SearchContract {
 
         void setUpRecyclerView(@ImageType.Type String imgType);
 
-        void updateResults(List<ArtistItem> adapter);
+        void updateResults(@NonNull List<ArtistItem> results);
     }
 
     interface Presenter extends BasePresenter {
 
         void search(@NonNull String artistName);
 
-        void onImgSizeSelectionChanged(@IdRes int viewId);
+        void changeImgSizeSelection(@IdRes int viewId);
 
         boolean isLoading();
 
