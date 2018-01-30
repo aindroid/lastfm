@@ -2,13 +2,18 @@ package ainhoamoreno.com.lastfm.artistdetail;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import javax.inject.Inject;
 
@@ -51,7 +56,7 @@ public class ArtistDetailActivity extends DaggerAppCompatActivity implements Art
         }
 
         if (!TextUtils.isEmpty(imageUrl)) {
-            mPresenter.loadImage(imageUrl);
+            loadImage(imageUrl);
         }
 
         mPresenter.getArtistInfo(mbid);
@@ -83,6 +88,27 @@ public class ArtistDetailActivity extends DaggerAppCompatActivity implements Art
     @Override
     public Context getContext() {
         return this;
+    }
+
+    public void loadImage(@NonNull final String imageUrl) {
+        Picasso.with(this)
+                .load(imageUrl)
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        updateArtistImg(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        updateArtistImg(null);
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
     }
 
     @Override

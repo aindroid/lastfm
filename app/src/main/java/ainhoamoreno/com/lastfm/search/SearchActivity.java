@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -17,10 +19,13 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.data.model.artist.ImageType;
+import ainhoamoreno.com.lastfm.domain.model.ArtistItem;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,8 +35,6 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
 
     @Inject SearchContract.Presenter mPresenter;
 
-    private SearchView mSearchView;
-
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.radioGroup) RadioGroup mRadioGroup;
     @BindView(R.id.toolbar) Toolbar mToolbar;
@@ -39,6 +42,9 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
     @BindView(R.id.progressBarView) View mProgressBarView;
 
     @BindString(R.string.search_no_results) String mNoResults;
+
+    private SearchView mSearchView;
+    private SearchAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +60,44 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
                 mPresenter.onImgSizeSelectionChanged(checkedId)
         );
 
-        // changes in content will not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-        mPresenter.setUpRecyclerView(ImageType.MEDIUM);
+        setUpRecyclerView(ImageType.MEDIUM);
     }
 
     @Override
     public void setUpToolbar(@Nullable String title) {
         setSupportActionBar(mToolbar);
+    }
+
+    @Override
+    public void setUpRecyclerView(@ImageType.Type String imgType) {
+        // changes in content will not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        mRecyclerView.setAdapter(null);
+
+        final LinearLayoutManager layoutManager;
+        switch (imgType) {
+            case ImageType.SMALL:
+                layoutManager = new GridLayoutManager(this, 3);
+                break;
+            case ImageType.MEDIUM:
+                layoutManager = new GridLayoutManager(this, 2);
+                break;
+            default:
+                layoutManager = new LinearLayoutManager(this);
+                break;
+        }
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addOnScrollListener(new SearchScrollListener(mPresenter, layoutManager));
+
+        mAdapter = mPresenter.createAdapter(imgType);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void updateResults(List<ArtistItem> results) {
+        mAdapter.setData(results);
     }
 
     @Override
@@ -136,11 +172,6 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
                 ViewCompat.getTransitionName(transitionView));
 
         startActivity(intent, options.toBundle());
-    }
-
-    @Override
-    public RecyclerView getRecyclerView() {
-        return mRecyclerView;
     }
 
     @Override

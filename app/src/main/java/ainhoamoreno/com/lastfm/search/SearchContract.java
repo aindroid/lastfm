@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+
+import java.util.List;
 
 import ainhoamoreno.com.lastfm.common.BasePresenter;
 import ainhoamoreno.com.lastfm.common.BaseView;
 import ainhoamoreno.com.lastfm.data.model.artist.ImageType;
+import ainhoamoreno.com.lastfm.domain.model.ArtistItem;
 
 public interface SearchContract {
 
@@ -24,7 +26,9 @@ public interface SearchContract {
                                   @NonNull Bundle extras,
                                   @NonNull android.view.View transitionView);
 
-        RecyclerView getRecyclerView();
+        void setUpRecyclerView(@ImageType.Type String imgType);
+
+        void updateResults(List<ArtistItem> adapter);
     }
 
     interface Presenter extends BasePresenter {
@@ -33,6 +37,10 @@ public interface SearchContract {
 
         void onImgSizeSelectionChanged(@IdRes int viewId);
 
-        void setUpRecyclerView(@ImageType.Type String imgType);
+        boolean isLoading();
+
+        void loadNextPage();
+
+        SearchAdapter createAdapter(@ImageType.Type String imgType);
     }
 }

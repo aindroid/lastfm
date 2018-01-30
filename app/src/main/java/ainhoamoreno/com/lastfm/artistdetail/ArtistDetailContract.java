@@ -19,7 +19,5 @@ public interface ArtistDetailContract {
     interface Presenter extends BasePresenter {
 
         void getArtistInfo(@NonNull final String mbid);
-
-        void loadImage(@NonNull final String imageUrl);
     }
 }

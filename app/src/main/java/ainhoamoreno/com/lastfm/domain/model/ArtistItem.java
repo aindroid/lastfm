@@ -11,7 +11,7 @@ public class ArtistItem extends BaseItem {
     private String imageUrl;
     private String content;
 
-    private ArtistItem() {
+    public ArtistItem() {
     }
 
     public String getName() {

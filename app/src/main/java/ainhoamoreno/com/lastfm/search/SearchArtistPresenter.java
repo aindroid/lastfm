@@ -1,14 +1,10 @@
 package ainhoamoreno.com.lastfm.search;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -20,10 +16,10 @@ import javax.inject.Inject;
 import ainhoamoreno.com.lastfm.R;
 import ainhoamoreno.com.lastfm.artistdetail.ArtistDetailActivity;
 import ainhoamoreno.com.lastfm.artistdetail.constants.Extras;
-import ainhoamoreno.com.lastfm.common.listeners.PaginationScrollListener;
 import ainhoamoreno.com.lastfm.data.model.artist.ImageType;
 import ainhoamoreno.com.lastfm.domain.ArtistDataProvider;
 import ainhoamoreno.com.lastfm.domain.model.ArtistItem;
+import ainhoamoreno.com.lastfm.utils.Strings;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
@@ -33,11 +29,10 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
 
     private static final int INITIAL_PAGE = 1;
 
-    private final List<ArtistItem> mResults = new ArrayList<>();
     private final SearchContract.View mView;
     private final ArtistDataProvider mDataProvider;
 
-    private SearchAdapter mAdapter;
+    private List<ArtistItem> mResults = new ArrayList<>();
     private boolean mIsLoading;
     private String mArtistQuery;
     private int mPage;
@@ -63,30 +58,8 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
     }
 
     @Override
-    public void setUpRecyclerView(@ImageType.Type String imgType) {
-        Context context = mView.getContext();
-        RecyclerView recyclerView = mView.getRecyclerView();
-
-        recyclerView.setAdapter(null);
-
-        final LinearLayoutManager layoutManager;
-        switch (imgType) {
-            case ImageType.SMALL:
-                layoutManager = new GridLayoutManager(context, 3);
-                break;
-            case ImageType.MEDIUM:
-                layoutManager = new GridLayoutManager(context, 2);
-                break;
-            default:
-                layoutManager = new LinearLayoutManager(context);
-                break;
-        }
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addOnScrollListener(new ArtistsScrollListener(layoutManager));
-
-        mAdapter = new SearchAdapter(imgType, this);
-        recyclerView.setAdapter(mAdapter);
+    public SearchAdapter createAdapter(@ImageType.Type String imgType) {
+        return new SearchAdapter(imgType, this);
     }
 
     @Override
@@ -117,11 +90,12 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
 
         mResults.clear();
 
-        search();
+        loadNextPage();
     }
 
-    private void search() {
-        Log.e(TAG, "search() - " + mArtistQuery + " - page = " + mPage);
+    @Override
+    public void loadNextPage() {
+        Log.d(TAG, "loadNextPage() - " + mArtistQuery + " - page = " + mPage);
 
         mView.showLoading();
 
@@ -139,40 +113,23 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
                     }
 
                     mPage ++;
+
                     mIsLoading = false;
                 })
-                .subscribe(artist -> mAdapter.setData(mResults));
+                .subscribe(artist -> mView.updateResults(mResults));
     }
 
     private void changeImgSizeSelection(@ImageType.Type String imgType) {
-        if (!TextUtils.isEmpty(mArtistQuery)) {
-            setUpRecyclerView(imgType);
+        mView.setUpRecyclerView(imgType);
 
+        if (!Strings.isEmpty(mArtistQuery)) {
             search(mArtistQuery);
         }
     }
 
-    class ArtistsScrollListener extends PaginationScrollListener {
-
-        private ArtistsScrollListener(LinearLayoutManager layoutManager) {
-            super(layoutManager);
-        }
-
-        @Override
-        protected void loadMoreItems() {
-            search();
-        }
-
-        @Override
-        public boolean isLastPage() {
-            // todo this needs implementing
-            return false;
-        }
-
-        @Override
-        public boolean isLoading() {
-            return mIsLoading;
-        }
+    @Override
+    public boolean isLoading() {
+        return mIsLoading;
     }
 
     @Override
@@ -180,5 +137,15 @@ public class SearchArtistPresenter implements SearchContract.Presenter, SearchAd
         if (mDisposable != null && mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
+    }
+
+    @VisibleForTesting
+    public void setResults(List<ArtistItem> list) {
+        mResults = list;
+    }
+
+    @VisibleForTesting
+    public void setArtistQuery(String artistQuery) {
+        this.mArtistQuery = artistQuery;
     }
 }
