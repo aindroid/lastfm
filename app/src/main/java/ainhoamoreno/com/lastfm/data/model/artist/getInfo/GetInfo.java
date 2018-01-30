@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import ainhoamoreno.com.lastfm.data.model.artist.Artist;
 
-public class ArtistGetInfo {
+public class GetInfo {
 
     @SerializedName("artist")
     @Expose
