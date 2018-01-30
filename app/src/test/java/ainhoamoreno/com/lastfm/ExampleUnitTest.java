@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import ainhoamoreno.com.lastfm.data.ArtistService;
 import ainhoamoreno.com.lastfm.data.model.artist.search.ArtistSearch;
-import ainhoamoreno.com.lastfm.data.api.LastFmArtistApi;
 import ainhoamoreno.com.lastfm.data.api.LastFmArtistApiImpl;
 
 import static org.junit.Assert.*;
@@ -23,7 +23,7 @@ public class ExampleUnitTest {
     String a = "{\"results\":{\"opensearch:Query\":{\"#text\":\"\",\"role\":\"request\",\"searchTerms\":\"cher\",\"startPage\":\"1\"},\"opensearch:totalResults\":\"58148\",\"opensearch:startIndex\":\"0\",\"opensearch:itemsPerPage\":\"1\",\"artistmatches\":{\"artist\":[{\"name\":\"Cher\",\"listeners\":\"1032151\",\"mbid\":\"bfcc6d75-a6a5-4bc6-8282-47aec8531818\",\"url\":\"https://www.last.fm/music/Cher\",\"streamable\":\"0\",\"image\":[{\"#text\":\"https://lastfm-img2.akamaized.net/i/u/34s/660336460ad748babe1915a8cefca481.png\",\"size\":\"small\"},{\"#text\":\"https://lastfm-img2.akamaized.net/i/u/64s/660336460ad748babe1915a8cefca481.png\",\"size\":\"medium\"},{\"#text\":\"https://lastfm-img2.akamaized.net/i/u/174s/660336460ad748babe1915a8cefca481.png\",\"size\":\"large\"},{\"#text\":\"https://lastfm-img2.akamaized.net/i/u/300x300/660336460ad748babe1915a8cefca481.png\",\"size\":\"extralarge\"},{\"#text\":\"https://lastfm-img2.akamaized.net/i/u/300x300/660336460ad748babe1915a8cefca481.png\",\"size\":\"mega\"}]}]},\"@attr\":{\"for\":\"cher\"}}}";
 
     @Mock
-    LastFmArtistApi service;
+    ArtistService service;
 
     LastFmArtistApiImpl repository;
 

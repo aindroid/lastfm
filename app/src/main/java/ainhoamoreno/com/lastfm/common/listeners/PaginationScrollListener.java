@@ -3,10 +3,6 @@ package ainhoamoreno.com.lastfm.common.listeners;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-/**
- * Created by ainhoa on 28/01/2018.
- */
-
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
 
     private final LinearLayoutManager layoutManager;

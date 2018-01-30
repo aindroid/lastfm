@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.common.base;
+package ainhoamoreno.com.lastfm.common;
 
 public interface BasePresenter {
 

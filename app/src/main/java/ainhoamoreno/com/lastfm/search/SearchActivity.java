@@ -68,6 +68,7 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
     protected void onResume() {
         super.onResume();
 
+        // prevents the keyboard from opening up
         if (mSearchView != null) {
             mSearchView.clearFocus();
         }
@@ -83,6 +84,7 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mPresenter.search(query);
+                mSearchView.clearFocus();
                 return false;
             }
 
@@ -101,7 +103,7 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
     }
 
     @Override
-    public void showNoResults() {
+    public void showNoResultsViews() {
         mProgressBarView.setVisibility(View.GONE);
         mEmptyView.setText(mNoResults);
         mEmptyView.setVisibility(View.VISIBLE);
@@ -110,7 +112,7 @@ public class SearchActivity extends DaggerAppCompatActivity implements SearchCon
     }
 
     @Override
-    public void showResults() {
+    public void showResultsViews() {
         mEmptyView.setVisibility(View.GONE);
         mProgressBarView.setVisibility(View.GONE);
     }

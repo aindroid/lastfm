@@ -6,17 +6,17 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import ainhoamoreno.com.lastfm.common.base.BasePresenter;
-import ainhoamoreno.com.lastfm.common.base.BaseView;
+import ainhoamoreno.com.lastfm.common.BasePresenter;
+import ainhoamoreno.com.lastfm.common.BaseView;
 import ainhoamoreno.com.lastfm.data.model.artist.ImageType;
 
 public interface SearchContract {
 
     interface View extends BaseView {
 
-        void showNoResults();
+        void showNoResultsViews();
 
-        void showResults();
+        void showResultsViews();
 
         void showLoading();
 

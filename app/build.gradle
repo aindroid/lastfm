@@ -10,6 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        buildConfigField "String", "FLASH_FM_BASE_URL", "\"http://ws.audioscrobbler.com/2.0/\""
         buildConfigField "String", "FLASH_FM_API_KEY", "\"a7c02f03da8e2b8cd6432c02062f6e18\""
     }
 
@@ -18,7 +19,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
     }
 
     compileOptions {
@@ -51,8 +51,6 @@ dependencies {
 
     //rxjava
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    // Because RxAndroid releases are few and far between, it is recommended you also
-    // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile 'io.reactivex.rxjava2:rxjava:2.1.5'
 
     // picasso

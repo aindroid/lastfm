@@ -9,26 +9,26 @@ import com.squareup.picasso.Target;
 
 import javax.inject.Inject;
 
-import ainhoamoreno.com.lastfm.data.api.LastFmArtistApiImpl;
+import ainhoamoreno.com.lastfm.domain.ArtistDataProvider;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 public class ArtistDetailPresenter implements ArtistDetailContract.Presenter {
 
     private final ArtistDetailContract.View mView;
-    private final LastFmArtistApiImpl mRepository;
+    private final ArtistDataProvider mDataProvider;
 
     private Disposable mDisposable;
 
     @Inject
-    public ArtistDetailPresenter(ArtistDetailContract.View view, LastFmArtistApiImpl repository) {
+    public ArtistDetailPresenter(ArtistDetailContract.View view, ArtistDataProvider dataProvider) {
         mView = view;
-        mRepository = repository;
+        mDataProvider = dataProvider;
     }
 
     @Override
     public void getArtistInfo(@NonNull final String mbid) {
-        mDisposable = mRepository.getArtistInfo(mbid)
+        mDisposable = mDataProvider.getArtistInfo(mbid)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(artist -> mView.updateArtistContent(artist.getContent()));
     }

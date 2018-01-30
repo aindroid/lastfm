@@ -12,7 +12,7 @@ import dagger.android.ActivityKey;
 import dagger.android.AndroidInjector;
 import dagger.multibindings.IntoMap;
 
-@Module (subcomponents = SearchActivityComponent.class)
+@Module (subcomponents = {SearchActivityComponent.class, ArtistDetailActivityComponent.class})
 public abstract class ActivityBuilderModule {
 
     @Binds

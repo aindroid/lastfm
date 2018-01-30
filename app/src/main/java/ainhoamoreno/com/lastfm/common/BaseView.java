@@ -1,4 +1,4 @@
-package ainhoamoreno.com.lastfm.common.base;
+package ainhoamoreno.com.lastfm.common;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
